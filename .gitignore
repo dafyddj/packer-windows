@@ -1,6 +1,7 @@
 .keep_known_hosts
 packer_cache/
 output-*
+box/
 *.box
 *.tar.gz
 iso
