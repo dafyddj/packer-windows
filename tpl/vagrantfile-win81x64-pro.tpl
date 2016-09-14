@@ -18,6 +18,8 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--memory", 1536]
     v.customize ["modifyvm", :id, "--cpus", 1]
     v.customize ["modifyvm", :id, "--vram", "256"]
+    v.customize ["modifyvm", :id, "--usbxhci", "on"]
+    v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     v.customize ["setextradata", "global", "GUI/MaxGuestResolution", "any"]
     v.customize ["setextradata", :id, "CustomVideoMode1", "1024x768x32"]
   end
