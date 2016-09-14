@@ -40,8 +40,11 @@
       "floppy_files": [
         "floppy/00-run-all-scripts.cmd",
         "floppy/01-install-wget.cmd",
+        "floppy/02-wsus-settings.cmd",
         "floppy/_download.cmd",
         "floppy/_packer_config.cmd",
+        "floppy/disablewinupdate.bat",
+        "floppy/disable-autologon.cmd",
         "floppy/fixnetwork.ps1",
         "floppy/install-winrm.cmd",
         "floppy/oracle-cert.cer",
@@ -145,7 +148,32 @@
       "scripts": [
         "script/vagrant.bat",
         "script/cmtool.bat",
-        "script/vmtool.bat",
+        "script/vmtool.bat"
+      ],
+      "type": "windows-shell"
+    },
+    {
+      "environment_vars": [
+        "CM={{user `cm`}}",
+        "CM_VERSION={{user `cm_version`}}",
+        "UPDATE={{user `update`}}"
+      ],
+      "script": "script/windows-updates.ps1",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "type": "powershell"
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "60m"
+    },
+    {
+      "environment_vars": [
+        "CM={{user `cm`}}",
+        "CM_VERSION={{user `cm_version`}}",
+        "UPDATE={{user `update`}}"
+      ],
+      "scripts": [
         "script/clean.bat",
         "script/ultradefrag.bat",
         "script/uninstall-7zip.bat",
