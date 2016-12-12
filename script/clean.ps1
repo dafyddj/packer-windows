@@ -1,6 +1,6 @@
 $ProgressPreference='SilentlyContinue'
 
-$cleanup_types = 
+$cleanup_types = `
 "Active Setup Temp Folders",`
 "BranchCache",`
 "Downloaded Program Files",`
@@ -42,3 +42,5 @@ foreach ($cleanup in $cleanup_types) {
 if (Test-Path "$env:SystemRoot\SYSTEM32\cleanmgr.exe") {
   Start-Process -Wait cleanmgr -ArgumentList "/sagerun:100"
 }
+
+Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
