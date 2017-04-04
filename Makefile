@@ -455,6 +455,8 @@ $(eval $(call BUILDBOX,win81x86-enterprise,$(WIN81_X86_ENTERPRISE),$(WIN81_X86_E
 
 $(eval $(call BUILDBOX,win81x64-pro,$(WIN81_X64_PRO),$(WIN81_X64_PRO_CHECKSUM)))
 
+$(eval $(call BUILDBOX,win10x64-pro,$(WIN10_X64_PRO),$(WIN10_X64_PRO_CHECKSUM)))
+
 $(eval $(call BUILDBOX,win81x86-pro,$(WIN81_X86_PRO),$(WIN81_X86_PRO_CHECKSUM)))
 
 $(eval $(call BUILDBOX,eval-win7x86-enterprise,$(EVAL_WIN7_X86),$(EVAL_WIN7_X86_CHECKSUM)))
