@@ -140,7 +140,7 @@ goto exit0
 :salt
 ::::::::::::
 
-if "%CM_VERSION%" == "latest" set CM_VERSION=2015.8.8-2
+if "%CM_VERSION%" == "latest" set CM_VERSION=2016.11.3
 
 if not defined SALT_64_URL set SALT_64_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-AMD64-Setup.exe
 if not defined SALT_32_URL set SALT_32_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-x86-Setup.exe
