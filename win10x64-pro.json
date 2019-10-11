@@ -59,7 +59,7 @@
       "iso_checksum": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "sha1",
       "iso_url": "{{ user `iso_url` }}",
-      "output_directory": "/Volumes/256Gb/output-{{build_name}}",
+      "output_directory": "/Volumes/512Gb/output-{{build_name}}",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "post_shutdown_delay": "1m",
       "type": "virtualbox-iso",
