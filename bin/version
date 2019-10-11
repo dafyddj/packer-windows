@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "${DEBUG:-false}" = "true" ]; then
+  set -x # Run the entire script in debug mode
+fi
+
+serial="serial.box"
+if [ ! -e "$serial" ] ; then
+  old=1
+  echo $old >$serial
+else
+  old=$(<$serial)
+  new=$((old+1))
+  sed -i '' -e "s/$old\$/$new/" $serial
+fi
+
+VERSION="$(date +%Y.%-m).$old"
+
+echo $VERSION
