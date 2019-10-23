@@ -14,12 +14,9 @@ Vagrant.configure("2") do |config|
   #config.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", auto_correct:true
 
   config.vm.provider :virtualbox do |v, override|
-    v.gui = true
     v.customize ["modifyvm", :id, "--memory", 1536]
     v.customize ["modifyvm", :id, "--cpus", 1]
     v.customize ["modifyvm", :id, "--vram", "256"]
-    v.customize ["modifyvm", :id, "--usbxhci", "on"]
-    v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     v.customize ["setextradata", "global", "GUI/MaxGuestResolution", "any"]
     v.customize ["setextradata", :id, "CustomVideoMode1", "1024x768x32"]
   end
