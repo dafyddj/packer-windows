@@ -8,7 +8,7 @@ if not defined SEVENZIP_32_URL set SEVENZIP_32_URL=http://www.7-zip.org/a/7z1600
 if not defined SEVENZIP_64_URL set SEVENZIP_64_URL=http://www.7-zip.org/a/7z1600-x64.msi
 
 if not defined ULTRADEFRAG_32_URL set ULTRADEFRAG_32_URL=http://downloads.sourceforge.net/ultradefrag/ultradefrag-portable-7.0.1.bin.i386.zip
-if not defined ULTRADEFRAG_64_URL set ULTRADEFRAG_64_URL=https://f000.backblazeb2.com/file/techneg-repo/ultradefrag/ultradefrag-portable-7.0.2.bin.amd64.zip
+if not defined ULTRADEFRAG_64_URL set ULTRADEFRAG_64_URL=https://f000.backblazeb2.com/file/techneg-repo/ultradefrag/ultradefrag-portable-7.1.3.bin.amd64.zip
 
 goto :main
 
