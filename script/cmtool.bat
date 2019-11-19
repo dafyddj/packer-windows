@@ -140,10 +140,10 @@ goto exit0
 :salt
 ::::::::::::
 
-if "%CM_VERSION%" == "latest" set CM_VERSION=2016.11.3
+if "%CM_VERSION%" == "latest" set CM_VERSION=2019.2.2
 
-if not defined SALT_64_URL set SALT_64_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-AMD64-Setup.exe
-if not defined SALT_32_URL set SALT_32_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-x86-Setup.exe
+if not defined SALT_64_URL set SALT_64_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-Py3-AMD64-Setup.exe
+if not defined SALT_32_URL set SALT_32_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-Py3-x86-Setup.exe
 
 if defined ProgramFiles(x86) (
   set SALT_URL=%SALT_64_URL%
