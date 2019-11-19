@@ -6,14 +6,14 @@ fi
 
 serial="serial.box"
 if [ ! -e "$serial" ] ; then
-  old=1
-  echo $old >$serial
+  cur=1
 else
-  old=$(<$serial)
-  new=$((old+1))
-  sed -i '' -e "s/$old\$/$new/" $serial
+  read cur <$serial
 fi
 
-VERSION="$(date +%Y.%-m).$old"
+next=$((cur + 1))
+echo $next >$serial
+
+VERSION="$(date +%Y.%-m).$cur"
 
 echo $VERSION
