@@ -61,8 +61,8 @@
       "iso_url": "{{ user `iso_url` }}",
       "memory": "{{ user `memory` }}",
       "output_directory": "/Volumes/512Gb/{{ build_name }}-output/{{ user `version` }}",
-      "shutdown_command": "{{ user `shutdown_command`}}",
       "post_shutdown_delay": "1m",
+      "shutdown_command": "{{ user `shutdown_command`}}",
       "type": "virtualbox-iso",
       "vboxmanage": [
         [
@@ -94,9 +94,7 @@
         "floppy/zz-start-sshd.cmd"
       ],
       "guest_os_type": "win-8.1",
-      "headless": "{{ user `headless` }}",
-      "iso_checksum": "{{ user `iso_checksum` }}",
-      "iso_checksum_type": "sha1",
+      "iso_checksum": "sha1:{{ user `iso_checksum` }}",
       "iso_url": "{{ user `iso_url` }}",
       "memory": "{{ user `memory` }}",
       "parallels_tools_flavor": "win",
@@ -132,25 +130,27 @@
       "type": "windows-shell"
     },
     {
-      "type": "breakpoint",
-      "disable": true
+      "disable": true,
+      "type": "breakpoint"
     },
     {
+      "elevated_password": "vagrant",
+      "elevated_user": "vagrant",
       "environment_vars": [
         "CM={{user `cm`}}",
         "CM_VERSION={{user `cm_version`}}",
         "UPDATE={{user `update`}}"
       ],
       "script": "script/windows-updates.ps1",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
       "type": "powershell"
     },
     {
-      "type": "windows-restart",
-      "restart_timeout": "60m"
+      "restart_timeout": "60m",
+      "type": "windows-restart"
     },
     {
+      "elevated_password": "vagrant",
+      "elevated_user": "vagrant",
       "environment_vars": [
         "CM={{user `cm`}}",
         "CM_VERSION={{user `cm_version`}}",
@@ -160,15 +160,15 @@
         "script/after-reboot.ps1",
         "script/chocolatey.ps1"
       ],
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
       "type": "powershell"
     },
     {
-      "type": "windows-restart",
-      "restart_timeout": "60m"
+      "restart_timeout": "60m",
+      "type": "windows-restart"
     },
     {
+      "elevated_password": "vagrant",
+      "elevated_user": "vagrant",
       "environment_vars": [
         "CM={{user `cm`}}",
         "CM_VERSION={{user `cm_version`}}",
@@ -177,8 +177,6 @@
       "scripts": [
         "script/clean.ps1"
       ],
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
       "type": "powershell"
     },
     {
@@ -197,8 +195,8 @@
       "type": "windows-shell"
     },
     {
-      "type": "windows-restart",
-      "restart_timeout": "60m"
+      "restart_timeout": "60m",
+      "type": "windows-restart"
     }
   ],
   "variables": {
@@ -215,3 +213,4 @@
     "version": "0.1.0"
   }
 }
+
