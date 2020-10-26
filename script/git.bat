@@ -4,7 +4,7 @@
 
 title Installing Git. Please wait...
 
-if not defined GIT_URL set GIT_URL=https://github.com/git-for-windows/git/releases/download/v2.23.0.windows.1/Git-2.23.0-64-bit.exe
+if not defined GIT_URL set GIT_URL=https://github.com/git-for-windows/git/releases/download/v2.28.0.windows.1/Git-2.28.0-64-bit.exe
 
 for %%i in (%GIT_URL%) do set GIT_EXE=%%~nxi
 set GIT_DIR=%TEMP%\git
