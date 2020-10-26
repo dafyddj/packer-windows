@@ -58,9 +58,8 @@
       "hard_drive_interface": "sata",
       "headless": "{{ user `headless` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
-      "iso_checksum_type": "sha1",
       "iso_url": "{{ user `iso_url` }}",
-      "output_directory": "/Volumes/512Gb/output-{{build_name}}",
+      "output_directory": "/Volumes/512Gb/{{ build_name }}-output/{{ user `version` }}",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "post_shutdown_delay": "1m",
       "type": "virtualbox-iso",
@@ -156,6 +155,10 @@
       "type": "windows-shell"
     },
     {
+      "type": "breakpoint",
+      "disable": true
+    },
+    {
       "environment_vars": [
         "CM={{user `cm`}}",
         "CM_VERSION={{user `cm_version`}}",
@@ -177,7 +180,8 @@
         "UPDATE={{user `update`}}"
       ],
       "scripts": [
-        "script/after-reboot.ps1"
+        "script/after-reboot.ps1",
+        "script/chocolatey.ps1"
       ],
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
@@ -207,6 +211,8 @@
         "UPDATE={{user `update`}}"
       ],
       "scripts": [
+        "script/unset-wsus-settings.cmd",
+        "script/git.bat",
         "script/ultradefrag.bat",
         "script/uninstall-7zip.bat",
         "script/sdelete.bat"
