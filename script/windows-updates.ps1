@@ -1,6 +1,7 @@
 ﻿if (! (Test-Path "env:UPDATE") -or ($env:UPDATE -eq "false")) { return }
 
 $ProgressPreference = "SilentlyContinue"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $PM_uri = 'https://f000.backblazeb2.com/file/techneg-repo/ms/PackageManagement_x64.msi'
 $PM_msi = "PackageManagement_x64.msi"
