@@ -44,7 +44,7 @@
         "floppy/_download.cmd",
         "floppy/_packer_config.cmd",
         "floppy/disablewinupdate.bat",
-        "floppy/disable-autologon.cmd",
+        "floppy/_disable-autologon.cmd",
         "floppy/fixnetwork.ps1",
         "floppy/install-winrm.cmd",
         "floppy/oracle-cert.cer",
