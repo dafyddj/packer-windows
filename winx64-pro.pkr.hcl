@@ -19,6 +19,11 @@ variable "disk_size" {
   default = "20480"
 }
 
+variable "guest_os_type" {
+  type    = string
+  default = "Windows81_64"
+}
+
 variable "headless" {
   type    = string
   default = "false"
@@ -54,23 +59,27 @@ variable "version" {
   default = "0.1.0"
 }
 
+variable "vm_name" {
+  type    = string
+  default = "win81x64-pro"
+}
+
 source "virtualbox-iso" "win" {
   communicator         = "winrm"
   cpus                 = "${var.cpus}"
   disk_size            = "${var.disk_size}"
-  floppy_files         = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/02-wsus-settings.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/disablewinupdate.bat", "floppy/_disable-autologon.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/oracle-cert.cer", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/win81x64-pro/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
+  floppy_files         = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/02-wsus-settings.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/disablewinupdate.bat", "floppy/_disable-autologon.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/oracle-cert.cer", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/${var.vm_name}/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
   guest_additions_mode = "attach"
-  guest_os_type        = "Windows8_64"
+  guest_os_type        = "${var.guest_os_type}"
   hard_drive_interface = "sata"
   headless             = "${var.headless}"
   iso_checksum         = "${var.iso_checksum}"
   iso_url              = "${var.iso_url}"
   memory               = "${var.memory}"
-#  output_directory     = "/Volumes/512Gb/${build.name}-output/${var.version}"
   post_shutdown_delay  = "1m"
   shutdown_command     = "${var.shutdown_command}"
 #  vboxmanage           = [["setextradata", "{{ .Name }}", "VBoxInternal/CPUM/CMPXCHG16B", "1"]]
-  vm_name              = "win81x64-pro"
+  vm_name              = "${var.vm_name}"
   winrm_password       = "vagrant"
   winrm_timeout        = "10000s"
   winrm_username       = "vagrant"
@@ -81,7 +90,7 @@ source "vmware-iso" "win" {
   cores               = "1"
   cpus                = "${var.cpus}"
   disk_size           = "${var.disk_size}"
-  floppy_files        = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/win81x64-pro/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
+  floppy_files        = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/${var.vm_name}/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
   guest_os_type       = "windows8-64"
   headless            = "${var.headless}"
   iso_checksum        = "${var.iso_checksum}"
@@ -90,7 +99,7 @@ source "vmware-iso" "win" {
 #  output_directory    = "/Volumes/512Gb/${build.name}-output/${var.version}"
   shutdown_command    = "${var.shutdown_command}"
   tools_upload_flavor = "windows"
-  vm_name             = "win81x64-pro"
+  vm_name             = "${var.vm_name}"
   vmx_data = {
     "scsi0.virtualDev" = "lsisas1068"
   }
@@ -152,7 +161,7 @@ build {
   post-processor "vagrant" {
     keep_input_artifact  = false
     compression_level    = 1
-    output               = "box/${source.type}/win81x64-pro-${var.cm}${var.cm_version}-${var.version}.box"
-    vagrantfile_template = "tpl/vagrantfile-win81x64-pro.tpl"
+    output               = "box/${source.type}/${var.vm_name}-${var.cm}${var.cm_version}-${var.version}.box"
+    vagrantfile_template = "tpl/vagrantfile-${var.vm_name}.tpl"
   }
 }

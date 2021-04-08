@@ -47,11 +47,11 @@ ifeq ($(OS),Windows_NT)
 else
 	VAGRANT_PROVIDER ?= vmware_fusion
 endif
-TEMPLATE_FILENAMES := $(wildcard *.json)
-BOX_FILENAMES := $(TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
+TEMPLATE_FILENAMES := $(wildcard *.pkrvars.hcl)
+BOX_FILENAMES := $(TEMPLATE_FILENAMES:.pkrvars.hcl=$(BOX_SUFFIX))
 TEST_BOX_FILES := $(foreach builder, $(BUILDER_TYPES), $(foreach box_filename, $(BOX_FILENAMES), test-box/$(builder)/$(box_filename)))
 VMWARE_BOX_DIR := box/vmware
-VIRTUALBOX_BOX_DIR := box/virtualbox
+VIRTUALBOX_BOX_DIR := box/virtualbox-iso
 PARALLELS_BOX_DIR := box/parallels
 VMWARE_BOX_FILES := $(foreach box_filename, $(BOX_FILENAMES), $(VMWARE_BOX_DIR)/$(box_filename))
 VIRTUALBOX_BOX_FILES := $(foreach box_filename, $(BOX_FILENAMES), $(VIRTUALBOX_BOX_DIR)/$(box_filename))
@@ -178,7 +178,7 @@ s3cp-virtualbox/$(1): s3cp-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX)
 s3cp-parallels/$(1): s3cp-$(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
 endef
 
-SHORTCUT_TARGETS := $(basename $(TEMPLATE_FILENAMES))
+SHORTCUT_TARGETS := $(filter-out pkrvars hcl,$(subst ., ,$(TEMPLATE_FILENAMES)))
 $(foreach i,$(SHORTCUT_TARGETS),$(eval $(call SHORTCUT,$(i))))
 
 ###############################################################################
@@ -204,10 +204,10 @@ test-win81-cygwin: test-win81x64-enterprise-cygwin test-win81x64-pro-cygwin test
 
 define BUILDBOX
 
-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).pkr.hcl
+$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).pkrvars.hcl
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
-	$(PACKER) build -only="$(VIRTUALBOX_BUILDER).*" $(PACKER_VARS) -var "iso_url=$(2)" -var "iso_checksum=$(3)" $(1).pkr.hcl
+	$(PACKER) build -only="$(VIRTUALBOX_BUILDER).*" $(PACKER_VARS) -var-file $(1).pkrvars.hcl winx64-pro.pkr.hcl
 
 $(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).json
 	rm -rf $(VMWARE_OUTPUT)
