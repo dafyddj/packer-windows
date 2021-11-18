@@ -50,6 +50,10 @@
                 </OSImage>
             </ImageInstall>
             <UserData>
+                <ProductKey>
+                    <WillShowUI>OnError</WillShowUI>
+                    <Key>GCRJD-8NW9H-F2CDX-CCM8D-9D6T9</Key>
+                </ProductKey>
                 <AcceptEula>true</AcceptEula>
             </UserData>
         </component>
