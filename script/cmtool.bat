@@ -142,8 +142,8 @@ goto exit0
 
 if "%CM_VERSION%" == "latest" set CM_VERSION=3002
 
-if not defined SALT_64_URL set SALT_64_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-Py3-AMD64-Setup.exe
-if not defined SALT_32_URL set SALT_32_URL=https://repo.saltstack.com/windows/Salt-Minion-%CM_VERSION%-Py3-x86-Setup.exe
+if not defined SALT_64_URL set SALT_64_URL=https://repo.saltproject.io/windows/Salt-Minion-%CM_VERSION%-Py3-AMD64-Setup.exe
+if not defined SALT_32_URL set SALT_32_URL=https://repo.saltproject.io/windows/Salt-Minion-%CM_VERSION%-Py3-x86-Setup.exe
 
 if defined ProgramFiles(x86) (
   set SALT_URL=%SALT_64_URL%
@@ -168,7 +168,7 @@ if exist "%SystemRoot%\_download.cmd" (
 if not exist "%SALT_PATH%" goto exit1
 
 echo ==^> Installing Salt minion
-:: see http://docs.saltstack.com/en/latest/topics/installation/windows.html
+:: see http://docs.saltproject.io/en/latest/topics/installation/windows.html
 "%SALT_PATH%" /S %SALT_OPTIONS%
 
 @if errorlevel 1 echo ==^> WARNING: Error %ERRORLEVEL% was returned by: "%SALT_PATH%" /S %SALT_OPTIONS%
