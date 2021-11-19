@@ -204,10 +204,10 @@ test-win81-cygwin: test-win81x64-enterprise-cygwin test-win81x64-pro-cygwin test
 
 define BUILDBOX
 
-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).json
+$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).pkr.hcl
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
-	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=$(2)" -var "iso_checksum=$(3)" $(1).json
+	$(PACKER) build -only="$(VIRTUALBOX_BUILDER).*" $(PACKER_VARS) -var "iso_url=$(2)" -var "iso_checksum=$(3)" $(1).pkr.hcl
 
 $(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).json
 	rm -rf $(VMWARE_OUTPUT)
