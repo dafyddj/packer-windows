@@ -3,63 +3,8 @@ ifneq ("$(wildcard Makefile.local)", "")
         include Makefile.local
 endif
 
-EVAL_WIN7_X64 ?= http://care.dlservice.microsoft.com/dl/download/evalx/win7/x64/EN/7600.16385.090713-1255_x64fre_enterprise_en-us_EVAL_Eval_Enterprise-GRMCENXEVAL_EN_DVD.iso
-EVAL_WIN7_X64_CHECKSUM ?= 15ddabafa72071a06d5213b486a02d5b55cb7070
-EVAL_WIN81_X64 ?= http://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.16384.WINBLUE_RTM.130821-1623_X64FRE_ENTERPRISE_EVAL_EN-US-IRM_CENA_X64FREE_EN-US_DV5.ISO
-EVAL_WIN81_X64_CHECKSUM ?= 73321fa912305e5a16096ef62380a91ee1f112da
-EVAL_WIN2008R2_X64 ?= http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso
-EVAL_WIN2008R2_X64_CHECKSUM ?= beed231a34e90e1dd9a04b3afabec31d62ce3889
-# EVAL_WIN2012R2_X64 ?= http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO
-EVAL_WIN2012R2_X64 ?= http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_EVAL_EN-US-IRM_SSS_X64FREE_EN-US_DV5.ISO
-# EVAL_WIN2012R2_X64_CHECKSUM ?= 849734f37346385dac2c101e4aacba4626bb141c
-EVAL_WIN2012R2_X64_CHECKSUM ?= 7e3f89dbff163e259ca9b0d1f078daafd2fed513
-
-EVAL_WIN7_X86 ?= http://care.dlservice.microsoft.com/dl/download/evalx/win7/x86/EN/7600.16385.090713-1255_x86fre_enterprise_en-us_EVAL_Eval_Enterprise-GRMCENEVAL_EN_DVD.iso
-EVAL_WIN7_X86_CHECKSUM ?= 971fc00183a52c152fe924a6b99fdec011a871c2
-EVAL_WIN81_X86 ?= http://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.16384.WINBLUE_RTM.130821-1623_X86FRE_ENTERPRISE_EVAL_EN-US-IRM_CENA_X86FREE_EN-US_DV5.ISO
-EVAL_WIN81_X86_CHECKSUM ?= e2c60b093b11b99c8f021c518249f4c42093efe2
-EVAL_WIN8_X64 ?= http://download.microsoft.com/download/5/3/C/53C31ED0-886C-4F81-9A38-F58CE4CE71E8/9200.16384.WIN8_RTM.120725-1247_X64FRE_ENTERPRISE_EVAL_EN-US-HRM_CENA_X64FREE_EN-US_DV5.ISO
-EVAL_WIN8_X64_CHECKSUM ?= ae59e04462e4dc74e971d6e98d0cc1f2f3d63f1d
-
-EVAL_WIN10_X64 ?= http://care.dlservice.microsoft.com/dl/download/C/3/9/C399EEA8-135D-4207-92C9-6AAB3259F6EF/10240.16384.150709-1700.TH1_CLIENTENTERPRISEEVAL_OEMRET_X64FRE_EN-US.ISO
-EVAL_WIN10_X64_CHECKSUM ?= 56ab095075be28a90bc0b510835280975c6bb2ce
-EVAL_WIN10_X86 ?= http://care.dlservice.microsoft.com/dl/download/C/3/9/C399EEA8-135D-4207-92C9-6AAB3259F6EF/10240.16384.150709-1700.TH1_CLIENTENTERPRISEEVAL_OEMRET_X86FRE_EN-US.ISO
-EVAL_WIN10_X86_CHECKSUM ?= 875b450d67e7176b8b3c72a80c60a0628bf1afac
-
-# @todo:
-EVAL_WIN2012_X64 ?= http://download.microsoft.com/download/6/D/A/6DAB58BA-F939-451D-9101-7DE07DC09C03/9200.16384.WIN8_RTM.120725-1247_X64FRE_SERVER_EVAL_EN-US-HRM_SSS_X64FREE_EN-US_DV5.ISO
-EVAL_WIN2012_X64_CHECKSUM ?= 922b365c3360ce630f6a4b4f2f3c79e66165c0fb
-
-WIN2008R2_X64 ?= iso/en_windows_server_2008_r2_with_sp1_vl_build_x64_dvd_617403.iso
-WIN2008R2_X64_CHECKSUM ?= 7e7e9425041b3328ccf723a0855c2bc4f462ec57
-WIN2012_X64 ?= iso/en_windows_server_2012_x64_dvd_915478.iso
-WIN2012_X64_CHECKSUM ?= d09e752b1ee480bc7e93dfa7d5c3a9b8aac477ba
-WIN2012R2_X64 ?= iso/en_windows_server_2012_r2_with_update_x64_dvd_6052708.iso
-WIN2012R2_X64_CHECKSUM ?= 865494e969704be1c4496d8614314361d025775e
-WIN7_X64_ENTERPRISE ?= iso/en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso
-WIN7_X64_ENTERPRISE_CHECKSUM ?= a491f985dccfb5863f31b728dddbedb2ff4df8d1
-WIN7_X64_PRO ?= iso/en_windows_7_professional_with_sp1_vl_build_x64_dvd_u_677791.iso
-WIN7_X64_PRO_CHECKSUM ?= 708e0338d4e2f094dfeb860347c84a6ed9e91d0c
-WIN7_X86_ENTERPRISE ?= iso/en_windows_7_enterprise_with_sp1_x86_dvd_u_677710.iso
-WIN7_X86_ENTERPRISE_CHECKSUM ?= 4e0450ac73ab6f9f755eb422990cd9c7a1f3509c
-WIN7_X86_PRO ?= iso/en_windows_7_professional_with_sp1_vl_build_x86_dvd_u_677896.iso
-WIN7_X86_PRO_CHECKSUM ?= d5bd65e1b326d728f4fd146878ee0d9a3da85075
-WIN8_X64_ENTERPRISE ?= iso/en_windows_8_enterprise_x64_dvd_917522.iso
-WIN8_X64_ENTERPRISE_CHECKSUM ?= 4eadfe83e736621234c63e8465986f0af6aa3c82
-WIN8_X86_ENTERPRISE ?= iso/en_windows_8_enterprise_x86_dvd_917587.iso
-WIN8_X86_ENTERPRISE_CHECKSUM ?= fefce3e64fb9ec1cc7977165328890ccc9a10656
-WIN8_X64_PRO ?= iso/en_windows_8_x64_dvd_915440.iso
-WIN8_X64_PRO_CHECKSUM ?= 1ce53ad5f60419cf04a715cf3233f247e48beec4
-WIN8_X86_PRO ?= iso/en_windows_8_x86_dvd_915417.iso
-WIN8_X86_PRO_CHECKSUM ?= 22d680ec53336bee8a5b276a972ceba104787f62
-WIN81_X64_ENTERPRISE ?= iso/en_windows_8.1_enterprise_with_update_x64_dvd_4065178.iso
-WIN81_X64_ENTERPRISE_CHECKSUM ?= 8fb332a827998f807a1346bef55969c6519668b9
-WIN81_X86_ENTERPRISE ?= iso/en_windows_8.1_enterprise_with_update_x86_dvd_4065185.iso
-WIN81_X86_ENTERPRISE_CHECKSUM ?= fe43558b4708b4b786bc3286924813b0aad21106
 WIN81_X64_PRO ?= iso/en_windows_8.1_professional_vl_with_update_x64_dvd_4065194.iso
 WIN81_X64_PRO_CHECKSUM ?= e50a6f0f08e933f25a71fbc843827fe752ed0365
-WIN81_X86_PRO ?= iso/en_windows_8.1_professional_vl_with_update_x86_dvd_4065201.iso
-WIN81_X86_PRO_CHECKSUM ?= c2d6f5d06362b7cb17dfdaadfb848c760963b254
 
 # Possible values for CM: (nocm | chef | chefdk | salt | puppet)
 CM ?= nocm
@@ -238,42 +183,6 @@ $(foreach i,$(SHORTCUT_TARGETS),$(eval $(call SHORTCUT,$(i))))
 
 ###############################################################################
 
-win7: win7-winrm win7-openssh win7-cygwin
-
-win7-winrm: win7x64-enterprise win7x64-pro win7x86-enterprise win7x86-pro
-
-win7-openssh: win7x64-enterprise-ssh win7x64-pro-ssh win7x86-enterprise-ssh win7x86-pro-ssh
-
-win7-cygwin: win7x64-enterprise-cygwin win7x64-pro-cygwin win7x86-enterprise-cygwin win7x86-pro-cygwin
-
-
-test-win7: test-win7-winrm test-win7-openssh test-win7-cygwin
-
-test-win7-winrm: test-win7x64-enterprise test-win7x64-pro test-win7x86-enterprise test-win7x86-pro
-
-test-win7-openssh: test-win7x64-enterprise-ssh test-win7x64-pro-ssh test-win7x86-enterprise-ssh test-win7x86-pro-ssh
-
-test-win7-cygwin: test-win7x64-enterprise-cygwin test-win7x64-pro-cygwin test-win7x86-enterprise-cygwin test-win7x86-pro-cygwin
-
-
-win8: win8-winrm win8-openssh win8-cygwin
-
-win8-winrm: win8x64-enterprise win8x64-pro win8x86-enterprise win8x86-pro
-
-win8-openssh: win8x64-enterprise-ssh win8x64-pro-ssh win8x86-enterprise-ssh win8x86-pro-ssh
-
-win8-cygwin: win8x64-enterprise-cygwin win8x64-pro-cygwin win8x86-enterprise-cygwin win8x86-pro-cygwin
-
-
-test-win8: test-win8-winrm test-win8-openssh test-win8-cygwin
-
-test-win8-winrm: test-win8x64-enterprise test-win8x64-pro test-win8x86-enterprise test-win8x86-pro
-
-test-win8-openssh: test-win8x64-enterprise-ssh test-win8x64-pro-ssh test-win8x86-enterprise-ssh test-win8x86-pro-ssh
-
-test-win8-cygwin: test-win8x64-enterprise-cygwin test-win8x64-pro-cygwin test-win8x86-enterprise-cygwin test-win8x86-pro-cygwin
-
-
 win81: win81-winrm win81-openssh win81-cygwin
 
 win81-winrm: win81x64-enterprise win81x64-pro win81x86-enterprise win81x86-pro
@@ -292,67 +201,6 @@ test-win81-openssh: test-win81x64-enterprise-ssh test-win81x64-pro-ssh test-win8
 test-win81-cygwin: test-win81x64-enterprise-cygwin test-win81x64-pro-cygwin test-win81x86-enterprise-cygwin test-win81x86-pro-cygwin
 
 
-win2008r2: win2008r2-winrm win2008r2-openssh win2008r2-cygwin
-
-win2008r2-winrm: win2008r2-datacenter win2008r2-enterprise win2008r2-standard win2008r2-web
-
-win2008r2-openssh: win2008r2-datacenter-ssh win2008r2-enterprise-ssh win2008r2-standard-ssh win2008r2-web-ssh
-
-win2008r2-cygwin: win2008r2-datacenter-cygwin win2008r2-enterprise-cygwin win2008r2-standard-cygwin win2008r2-web-cygwin
-
-
-test-win2008r2: test-win2008r2-winrm test-win2008r2-openssh test-win2008r2-cygwin
-
-test-win2008r2-winrm: test-win2008r2-datacenter test-win2008r2-enterprise test-win2008r2-standard test-win2008r2-web
-
-test-win2008r2-openssh: test-win2008r2-datacenter-ssh test-win2008r2-enterprise-ssh test-win2008r2-standard-ssh test-win2008r2-web-ssh
-
-test-win2008r2-cygwin: test-win2008r2-datacenter-cygwin test-win2008r2-enterprise-cygwin test-win2008r2-standard-cygwin test-win2008r2-web-cygwin
-
-
-win2012: win2012-winrm win2012-openssh win2012-cygwin
-
-win2012-winrm: win2012-datacenter win2012-standard
-
-win2012-openssh: win2012-datacenter-ssh win2012-standard-ssh
-
-win2012-cygwin: win2012-datacenter-cygwin win2012-standard-cygwin
-
-
-test-win2012: test-win2012-winrm test-win2012-openssh test-win2012-cygwin
-
-test-win2012-winrm: test-win2012-datacenter test-win2012-standard
-
-test-win2012-openssh: test-win2012-datacenter-ssh test-win2012-standard-ssh
-
-test-win2012-cygwin: test-win2012-datacenter-cygwin test-win2012-standard-cygwin
-
-
-win2012r2: win2012r2-winrm win2012r2-openssh win2012r2-cygwin
-
-win2012r2-winrm: win2012r2-datacenter win2012r2-standard
-
-win2012r2-openssh: win2012r2-datacenter-ssh win2012r2-standard-ssh
-
-win2012r2-cygwin: win2012r2-datacenter-cygwin win2012r2-standard-cygwin
-
-
-test-win2012r2: test-win2012r2-winrm test-win2012r2-openssh test-win2012r2-cygwin
-
-test-win2012r2-winrm: test-win2012r2-datacenter test-win2012r2-standard
-
-test-win2012r2-openssh: test-win2012r2-datacenter-ssh test-win2012r2-standard-ssh
-
-test-win2012r2-cygwin: test-win2012r2-datacenter-cygwin test-win2012r2-standard-cygwin
-
-
-eval: eval-winrm eval-openssh
-
-eval-winrm: eval-win2012r2-datacenter eval-win2008r2-datacenter eval-win81x64-enterprise eval-win7x64-enterprise eval-win10x64-enterprise
-
-eval-openssh: eval-win2012r2-datacenter-ssh eval-win2008r2-datacenter-ssh eval-win81x64-enterprise-ssh eval-win7x64-enterprise-ssh eval-win10x64-enterprise-ssh
-
-test-eval-openssh: test-eval-win2012r2-datacenter test-eval-win2008r2-datacenter test-eval-win81x64-enterprise test-eval-win7x64-enterprise test-eval-win10x64-enterprise
 
 define BUILDBOX
 
@@ -403,78 +251,9 @@ $(PARALLELS_BOX_DIR)/$(1)-cygwin$(BOX_SUFFIX): $(1)-cygwin.json
 
 endef
 
-$(eval $(call BUILDBOX,win2008r2-datacenter,$(WIN2008R2_X64),$(WIN2008R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win2008r2-datacenter,$(EVAL_WIN2008R2_X64),$(EVAL_WIN2008R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2008r2-enterprise,$(WIN2008R2_X64),$(WIN2008R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2008r2-standard,$(WIN2008R2_X64),$(WIN2008R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win2008r2-standard,$(EVAL_WIN2008R2_X64),$(EVAL_WIN2008R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2008r2-web,$(WIN2008R2_X64),$(WIN2008R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2012-datacenter,$(WIN2012_X64),$(WIN2012_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2012-standard,$(WIN2012_X64),$(WIN2012_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2012r2-datacenter,$(WIN2012R2_X64),$(WIN2012R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win2012r2-datacenter,$(EVAL_WIN2012R2_X64),$(EVAL_WIN2012R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2012r2-standard,$(WIN2012R2_X64),$(WIN2012R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win2012r2-standard,$(EVAL_WIN2012R2_X64),$(EVAL_WIN2012R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win2012r2-standardcore,$(WIN2012R2_X64),$(WIN2012R2_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win7x64-enterprise,$(WIN7_X64_ENTERPRISE),$(WIN7_X64_ENTERPRISE_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win7x64-enterprise,$(EVAL_WIN7_X64),$(EVAL_WIN7_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win7x86-enterprise,$(WIN7_X86_ENTERPRISE),$(WIN7_X86_ENTERPRISE_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win7x64-pro,$(WIN7_X64_PRO),$(WIN7_X64_PRO_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win7x86-pro,$(WIN7_X86_PRO),$(WIN7_X86_PRO_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win8x64-enterprise,$(WIN8_X64_ENTERPRISE),$(WIN8_X64_ENTERPRISE_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win8x64-pro,$(WIN8_X64_PRO),$(WIN8_X64_PRO_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win8x86-enterprise,$(WIN8_X86_ENTERPRISE),$(WIN8_X86_ENTERPRISE_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win8x86-pro,$(WIN8_X86_PRO),$(WIN8_X86_PRO_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win81x64-enterprise,$(WIN81_X64_ENTERPRISE),$(WIN81_X64_ENTERPRISE_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win81x64-enterprise,$(EVAL_WIN81_X64),$(EVAL_WIN81_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win81x86-enterprise,$(WIN81_X86_ENTERPRISE),$(WIN81_X86_ENTERPRISE_CHECKSUM)))
-
 $(eval $(call BUILDBOX,win81x64-pro,$(WIN81_X64_PRO),$(WIN81_X64_PRO_CHECKSUM)))
 
 $(eval $(call BUILDBOX,win10x64-pro,$(WIN10_X64_PRO),$(WIN10_X64_PRO_CHECKSUM)))
-
-$(eval $(call BUILDBOX,win81x86-pro,$(WIN81_X86_PRO),$(WIN81_X86_PRO_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win7x86-enterprise,$(EVAL_WIN7_X86),$(EVAL_WIN7_X86_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win81x86-enterprise,$(EVAL_WIN81_X86),$(EVAL_WIN81_X86_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win8x64-enterprise,$(EVAL_WIN8_X64),$(EVAL_WIN8_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win10x64-enterprise,$(EVAL_WIN10_X64),$(EVAL_WIN10_X64_CHECKSUM)))
-
-$(eval $(call BUILDBOX,eval-win10x86-enterprise,$(EVAL_WIN10_X86),$(EVAL_WIN10_X86_CHECKSUM)))
-
-# @todo:
-#$(eval $(call BUILDBOX,eval-win2012-standard,$(EVAL_WIN2012_X64),$(EVAL_WIN2012_X64_CHECKSUM)))
-
-# can't find powershell:
-#$(eval $(call BUILDBOX,win2008r2-standardcore,$(WIN2008R2_X64),$(WIN2008R2_X64_CHECKSUM)))
-#$(eval $(call BUILDBOX,win2008r2-standardcore-cygwin,$(WIN2008R2_X64),$(WIN2008R2_X64_CHECKSUM)))
 
 # Generic rule - not used currently
 #$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): %.json
@@ -545,18 +324,6 @@ test-$(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX): $(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX)
 test-$(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX): $(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX)
 	-test -f .keep_known_hosts || rm -f ~/.ssh/known_hosts
 	bin/test-box.sh $< parallels parallels $(CURRENT_DIR)/test/*_spec.rb
-
-ssh-$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): $(VMWARE_BOX_DIR)/%$(BOX_SUFFIX)
-	-test -f .keep_known_hosts || rm -f ~/.ssh/known_hosts
-	bin/ssh-box.sh $< vmware_desktop $(VAGRANT_PROVIDER) $(CURRENT_DIR)/test/*_spec.rb
-
-ssh-$(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX): $(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX)
-	-test -f .keep_known_hosts || rm -f ~/.ssh/known_hosts
-	bin/ssh-box.sh $< virtualbox virtualbox $(CURRENT_DIR)/test/*_spec.rb
-
-ssh-$(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX): $(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX)
-	-test -f .keep_known_hosts || rm -f ~/.ssh/known_hosts
-	bin/ssh-box.sh $< parallels parallels $(CURRENT_DIR)/test/*_spec.rb
 
 S3_STORAGE_CLASS ?= REDUCED_REDUNDANCY
 S3_ALLUSERS_ID ?= uri=http://acs.amazonaws.com/groups/global/AllUsers
