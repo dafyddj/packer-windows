@@ -111,6 +111,10 @@ source "vmware-iso" "win" {
 build {
   sources = ["source.virtualbox-iso.win"]
 
+  provisioner "powershell" {
+    inline = ["Get-Content $env:TEMP/00-run-all-scripts.log.txt"]
+  }
+
   provisioner "windows-shell" {
     scripts          = ["script/vmtool.bat"]
   }
