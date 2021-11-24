@@ -112,8 +112,16 @@ build {
   sources = ["source.virtualbox-iso.win"]
 
   provisioner "windows-shell" {
+    scripts          = ["script/vmtool.bat"]
+  }
+
+  provisioner "windows-restart" {
+    restart_timeout = "60m"
+  }
+
+  provisioner "windows-shell" {
     environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}", "UPDATE=${var.update}"]
-    scripts          = ["script/vagrant.bat", "script/cmtool.bat", "script/vmtool.bat"]
+    scripts          = ["script/vagrant.bat", "script/cmtool.bat"]
   }
 
   provisioner "breakpoint" {
