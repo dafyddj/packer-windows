@@ -68,7 +68,7 @@ source "virtualbox-iso" "win" {
   communicator         = "winrm"
   cpus                 = "${var.cpus}"
   disk_size            = "${var.disk_size}"
-  floppy_files         = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/02-wsus-settings.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/disablewinupdate.bat", "floppy/_disable-autologon.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/oracle-cert.cer", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/${var.vm_name}/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
+  floppy_files         = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/disablewinupdate.bat", "floppy/_disable-autologon.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/oracle-cert.cer", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/${var.vm_name}/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
   guest_additions_mode = "attach"
   guest_os_type        = "${var.guest_os_type}"
   hard_drive_interface = "sata"
@@ -163,7 +163,7 @@ build {
 
   provisioner "windows-shell" {
     environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}", "UPDATE=${var.update}"]
-    scripts          = ["script/unset-wsus-settings.cmd", "script/git.bat", "script/ultradefrag.bat", "script/uninstall-7zip.bat", "script/sdelete.bat"]
+    scripts          = ["script/git.bat", "script/ultradefrag.bat", "script/uninstall-7zip.bat", "script/sdelete.bat"]
   }
 
   provisioner "windows-restart" {
