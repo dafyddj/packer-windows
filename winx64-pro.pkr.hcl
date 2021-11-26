@@ -26,7 +26,7 @@ variable "guest_os_type" {
 
 variable "headless" {
   type    = string
-  default = "false"
+  default = "true"
 }
 
 variable "iso_checksum" {
