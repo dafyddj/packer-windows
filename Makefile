@@ -3,39 +3,40 @@ ifneq ("$(wildcard Makefile.local)", "")
         include Makefile.local
 endif
 
-WIN81_X64_PRO ?= iso/en_windows_8.1_professional_vl_with_update_x64_dvd_4065194.iso
-WIN81_X64_PRO_CHECKSUM ?= e50a6f0f08e933f25a71fbc843827fe752ed0365
+# Possible values for cm: (nocm | chef | chefdk | salt | puppet)
+cm ?= salt
+# Possible values for cm_version: (latest | x.y.z | x.y)
+# cm_version needs to be empty in the case cm=nocm
+cm_version ?=
+ifndef cm_version
+       ifneq ($(cm),nocm)
+               cm_version = latest
+       endif
+endif
 
-# Possible values for CM: (nocm | chef | chefdk | salt | puppet)
-CM ?= nocm
-# Possible values for CM_VERSION: (latest | x.y.z | x.y)
-CM_VERSION ?=
-ifndef CM_VERSION
-	ifneq ($(CM),nocm)
-		CM_VERSION = latest
-	endif
-endif
-BOX_VERSION ?= $(shell bin/version)
-UPDATE ?= false
+auto_version := $(shell bin/version)
+version ?= $(auto_version)
 GENERALIZE ?= false
-HEADLESS ?= false
-ifndef SHUTDOWN_COMMAND
+ifndef shutdown_command
 ifeq ($(GENERALIZE),true)
-	SHUTDOWN_COMMAND ?= C:/Windows/System32/Sysprep/sysprep.exe /generalize /shutdown /oobe /unattend:A:/Autounattend.xml
+	shutdown_command ?= C:/Windows/System32/Sysprep/sysprep.exe /generalize /shutdown /oobe /unattend:A:/Autounattend.xml
+endif
+endif
+ifeq ($(cm),nocm)
+	BOX_SUFFIX := -$(cm)-$(version).box
 else
-	SHUTDOWN_COMMAND ?= shutdown /s /t 10 /f /d p:4:1 /c Packer_Shutdown
+	BOX_SUFFIX := -$(cm)$(cm_version)-$(version).box
 endif
-endif
-ifeq ($(CM),nocm)
-	BOX_SUFFIX := -$(CM)-$(BOX_VERSION).box
-else
-	BOX_SUFFIX := -$(CM)$(CM_VERSION)-$(BOX_VERSION).box
-endif
+
 # Packer does not allow empty variables, so only pass variables that are defined
-PACKER_VARS := -var 'cm=$(CM)' -var 'version=$(BOX_VERSION)' -var 'update=$(UPDATE)' -var 'headless=$(HEADLESS)' -var "shutdown_command=$(SHUTDOWN_COMMAND)"
-ifdef CM_VERSION
-	PACKER_VARS += -var 'cm_version=$(CM_VERSION)'
+cli_vars = cm cm_version version update headless shutdown_command
+define build_cli
+ifdef $(1)
+	PACKER_VARS += -var '$(1)=$(2)'
 endif
+endef
+$(foreach cli_var,$(cli_vars),$(eval $(call build_cli,$(cli_var),$(value $(cli_var)))))
+
 PACKER ?= packer
 ifdef PACKER_DEBUG
 	PACKER := PACKER_LOG=1 $(PACKER)
