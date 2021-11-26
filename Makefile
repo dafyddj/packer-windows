@@ -29,7 +29,7 @@ else
 endif
 
 # Packer does not allow empty variables, so only pass variables that are defined
-cli_vars = cm cm_version version update headless shutdown_command
+cli_vars = cm cm_version version update headless shutdown_command update_limit
 define build_cli
 ifdef $(1)
 	PACKER_VARS += -var '$(1)=$(2)'

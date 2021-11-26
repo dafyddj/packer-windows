@@ -1,3 +1,11 @@
+packer {
+  required_plugins {
+    windows-update = {
+      version = "0.14.0"
+      source = "github.com/rgl/windows-update"
+    }
+  }
+}
 
 variable "cm" {
   type    = string
@@ -49,9 +57,9 @@ variable "shutdown_command" {
   default = "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\""
 }
 
-variable "update" {
-  type    = string
-  default = "true"
+variable "update_limit" {
+  type    = number
+  default = 1000
 }
 
 variable "version" {
@@ -124,7 +132,7 @@ build {
   }
 
   provisioner "windows-shell" {
-    environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}", "UPDATE=${var.update}"]
+    environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
     scripts          = ["script/vagrant.bat", "script/cmtool.bat"]
   }
 
@@ -132,21 +140,22 @@ build {
     disable = true
   }
 
+  provisioner "windows-update" {
+    # Install Important updates only
+    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
+    update_limit    = var.update_limit
+  }
+
+  provisioner "windows-update" {
+    # Install Important updates only
+    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
+    update_limit    = var.update_limit
+  }
+
   provisioner "powershell" {
     elevated_password = "vagrant"
     elevated_user     = "vagrant"
-    environment_vars  = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}", "UPDATE=${var.update}"]
-    script            = "script/windows-updates.ps1"
-  }
-
-  provisioner "windows-restart" {
-    restart_timeout = "60m"
-  }
-
-  provisioner "powershell" {
-    elevated_password = "vagrant"
-    elevated_user     = "vagrant"
-    environment_vars  = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}", "UPDATE=${var.update}"]
+    environment_vars  = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
     scripts           = ["script/after-reboot.ps1", "script/chocolatey.ps1"]
   }
 
@@ -157,12 +166,12 @@ build {
   provisioner "powershell" {
     elevated_password = "vagrant"
     elevated_user     = "vagrant"
-    environment_vars  = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}", "UPDATE=${var.update}"]
+    environment_vars  = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
     scripts           = ["script/clean.ps1"]
   }
 
   provisioner "windows-shell" {
-    environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}", "UPDATE=${var.update}"]
+    environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
     scripts          = ["script/git.bat", "script/ultradefrag.bat", "script/uninstall-7zip.bat", "script/sdelete.bat"]
   }
 
