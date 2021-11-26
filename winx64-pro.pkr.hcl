@@ -19,7 +19,7 @@ variable "cm_version" {
 
 variable "cpus" {
   type    = string
-  default = "1"
+  default = "2"
 }
 
 variable "disk_size" {
