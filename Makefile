@@ -208,7 +208,7 @@ define BUILDBOX
 $(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).pkrvars.hcl
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
-	$(PACKER) build -only="$(VIRTUALBOX_BUILDER).*" $(PACKER_VARS) -var-file $(1).pkrvars.hcl winx64-pro.pkr.hcl
+	$(PACKER) build -timestamp-ui -only="$(VIRTUALBOX_BUILDER).*" $(PACKER_VARS) -var-file $(1).pkrvars.hcl winx64-pro.pkr.hcl
 
 $(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).json
 	rm -rf $(VMWARE_OUTPUT)
