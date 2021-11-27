@@ -12,16 +12,10 @@ if ( (Test-Path "env:UPDATE") -and ($env:UPDATE -eq "true")) {
   Install-WindowsUpdate -AcceptAll -IgnoreReboot
 }
 
-$uninstallSuccess = $false
-#while(!$uninstallSuccess) {
-  Write-Host "Attempting to uninstall features..."
-#  try {
-    Get-WindowsOptionalFeature -Online | ? { $_.State -eq 'Disabled' } | Disable-WindowsOptionalFeature -Online -Remove -NoRestart -ErrorAction Stop
-    Write-Host "Uninstall succeeded!"
-    $uninstallSuccess = $true
-#  }
-#  catch {
-#    Write-Host "Waiting two minutes before next attempt"
-#    Start-Sleep -Seconds 120
-#  }
-#}
+Write-Host "Attempting to uninstall Windows Features..."
+Get-WindowsOptionalFeature -Online | ? { $_.State -eq 'Disabled' } |
+  ForEach-Object {
+    Write-Host "Disabling:" $_.FeatureName
+    Disable-WindowsOptionalFeature -Online -Remove -NoRestart | Out-Null
+  }
+Write-Host "Finished uninstalling Windows Features"
