@@ -39,12 +39,12 @@ variable "headless" {
 
 variable "iso_checksum" {
   type    = string
-  default = "e50a6f0f08e933f25a71fbc843827fe752ed0365"
+  default = "de3d15afbda350f77c27aad76844477e396e947302d7402c09a16f3fa7254c68"
 }
 
 variable "iso_url" {
   type    = string
-  default = "iso/en_windows_8.1_professional_vl_with_update_x64_dvd_4065194.iso"
+  default = "iso/Win8.1_EnglishInternational_x64.iso"
 }
 
 variable "memory" {
@@ -76,44 +76,28 @@ source "virtualbox-iso" "win" {
   communicator         = "winrm"
   cpus                 = "${var.cpus}"
   disk_size            = "${var.disk_size}"
-  floppy_files         = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/disablewinupdate.bat", "floppy/_disable-autologon.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/oracle-cert.cer", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/${var.vm_name}/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
-  guest_additions_mode = "attach"
+  floppy_files         = ["floppy/00-run-all-scripts.cmd",
+                          "floppy/01-install-wget.cmd",
+                          "floppy/_download.cmd",
+                          "floppy/_packer_config.cmd",
+                          "floppy/disablewinupdate.bat",
+                          "floppy/fixnetwork.ps1",
+                          "floppy/install-winrm.cmd",
+                          "floppy/oracle-cert.cer",
+                          "floppy/powerconfig.bat",
+                          "floppy/${var.vm_name}/Autounattend.xml",
+                          "floppy/zz-start-sshd.cmd"]
+  guest_additions_mode = "disable"
   guest_os_type        = "${var.guest_os_type}"
-  hard_drive_interface = "sata"
   headless             = "${var.headless}"
   iso_checksum         = "${var.iso_checksum}"
   iso_url              = "${var.iso_url}"
   memory               = "${var.memory}"
-  post_shutdown_delay  = "1m"
   shutdown_command     = "${var.shutdown_command}"
-#  vboxmanage           = [["setextradata", "{{ .Name }}", "VBoxInternal/CPUM/CMPXCHG16B", "1"]]
   vm_name              = "${var.vm_name}"
   winrm_password       = "vagrant"
   winrm_timeout        = "10000s"
   winrm_username       = "vagrant"
-}
-
-source "vmware-iso" "win" {
-  communicator        = "winrm"
-  cores               = "1"
-  cpus                = "${var.cpus}"
-  disk_size           = "${var.disk_size}"
-  floppy_files        = ["floppy/00-run-all-scripts.cmd", "floppy/01-install-wget.cmd", "floppy/_download.cmd", "floppy/_packer_config.cmd", "floppy/fixnetwork.ps1", "floppy/install-winrm.cmd", "floppy/passwordchange.bat", "floppy/powerconfig.bat", "floppy/${var.vm_name}/Autounattend.xml", "floppy/zz-start-sshd.cmd"]
-  guest_os_type       = "windows8-64"
-  headless            = "${var.headless}"
-  iso_checksum        = "${var.iso_checksum}"
-  iso_url             = "${var.iso_url}"
-  memory              = "${var.memory}"
-#  output_directory    = "/Volumes/512Gb/${build.name}-output/${var.version}"
-  shutdown_command    = "${var.shutdown_command}"
-  tools_upload_flavor = "windows"
-  vm_name             = "${var.vm_name}"
-  vmx_data = {
-    "scsi0.virtualDev" = "lsisas1068"
-  }
-  winrm_password = "vagrant"
-  winrm_timeout  = "10000s"
-  winrm_username = "vagrant"
 }
 
 build {
@@ -123,66 +107,19 @@ build {
     inline = ["Get-Content $env:TEMP/00-run-all-scripts.log.txt"]
   }
 
-  provisioner "windows-shell" {
-    scripts          = ["script/vmtool.bat"]
-  }
-
-  provisioner "windows-restart" {
-    restart_timeout = "60m"
-  }
-
-  provisioner "windows-shell" {
-    environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
-    scripts          = ["script/vagrant.bat", "script/cmtool.bat"]
-  }
-
   provisioner "breakpoint" {
     disable = true
   }
 
-  provisioner "windows-update" {
-    # Install Important updates only
-    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
-    update_limit    = var.update_limit
-  }
-
-  provisioner "windows-update" {
-    # Install Important updates only
-    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
-    update_limit    = var.update_limit
-  }
-
-  provisioner "powershell" {
-    elevated_password = "vagrant"
-    elevated_user     = "vagrant"
-    environment_vars  = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
-    scripts           = ["script/after-reboot.ps1", "script/chocolatey.ps1"]
-  }
-
-  provisioner "windows-restart" {
-    restart_timeout = "60m"
-  }
-
-  provisioner "powershell" {
-    elevated_password = "vagrant"
-    elevated_user     = "vagrant"
-    environment_vars  = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
-    scripts           = ["script/clean.ps1"]
-  }
-
-  provisioner "windows-shell" {
-    environment_vars = ["CM=${var.cm}", "CM_VERSION=${var.cm_version}"]
-    scripts          = ["script/git.bat", "script/ultradefrag.bat", "script/uninstall-7zip.bat", "script/sdelete.bat"]
-  }
-
-  provisioner "windows-restart" {
-    restart_timeout = "60m"
-  }
-
-  post-processor "vagrant" {
-    keep_input_artifact  = false
-    compression_level    = 1
-    output               = "box/${source.type}/${var.vm_name}-${var.cm}${var.cm_version}-${var.version}.box"
-    vagrantfile_template = "tpl/vagrantfile-${var.vm_name}.tpl"
-  }
+#  provisioner "windows-update" {
+#    # Install Important updates only
+#    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
+#    update_limit    = var.update_limit
+#  }
+#
+#  provisioner "windows-update" {
+#    # Install Important updates only
+#    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
+#    update_limit    = var.update_limit
+#  }
 }
