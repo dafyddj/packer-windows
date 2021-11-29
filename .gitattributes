@@ -2,9 +2,11 @@
 * text=auto
 
 # Force Unix-style line endings on these files
+*.hcl eol=lf
 *.sh eol=lf
 ks.cfg eol=lf
 preseed.cfg eol=lf
+Makefile eol=lf
 
 # Force CRLF line endings on these files
 *.bat text eol=crlf

@@ -1,4 +1,5 @@
 .keep_known_hosts
+.snapshots/
 packer_cache/
 output-*
 box/
