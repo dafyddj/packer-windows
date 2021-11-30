@@ -44,9 +44,16 @@ build {
 
   provisioner "powershell" {
     inline = [<<-EOF
-      "Testing!"
-      "Testing!"
-      "123"
+      @(
+        "C:\Recovery"
+      ) | % { if (Test-Path $_) {
+                Write-Host "Removing ""$_""..."
+		Remove-Item -Recurse -Force $_ | Out-Null
+	      }
+	    }
+      Write-Host "Setting PageFile to clear at Shutdown..."
+      Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" `
+        -Name "ClearPageFileAtShutdown" -Value 1
       EOF
     ]
   }
