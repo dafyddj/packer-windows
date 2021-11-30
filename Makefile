@@ -1,5 +1,5 @@
 # Pass specific variables from the environment
-cli_vars = skip_export cm_version
+cli_vars = skip_export cm_version update_limit
 define build_cli
 ifdef $(1)
         PACKER_VARS += -var '$(1)=$(2)'
@@ -7,15 +7,17 @@ endif
 endef
 $(foreach cli_var,$(cli_vars),$(eval $(call build_cli,$(cli_var),$(value $(cli_var)))))
 
-poweroff := @-VBoxManage controlvm win81x64-pro poweroff 2>/dev/null || true
+poweroff   := @-VBoxManage controlvm win81x64-pro poweroff 2>/dev/null || true
 unregister := @-VBoxManage unregistervm win81x64-pro --delete 2>/dev/null || true
 
 stage_files := $(wildcard *.pkr.hcl)
 stages := $(stage_files:.pkr.hcl=)
+snapshots := $(foreach stage,$(filter-out boot export,$(stages)),$(stage))
 
-provision_depends_on := .snapshots/guestadd
-guestadd_depends_on := .snapshots/install
-install_depends_on := output-boot/win81x64-pro.vdi
+install_depends_on   := output-boot/win81x64-pro.vdi
+guestadd_depends_on  := .snapshots/install
+updates_depends_on   := .snapshots/guestadd
+provision_depends_on := .snapshots/updates
 
 output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision
 	$(poweroff)
@@ -37,3 +39,9 @@ setup: .snapshots
 .snapshots:
 	mkdir -p $@
 
+.PHONY: list
+list:
+	@echo "Targets:"
+	@for stage in $(stages) ; do \
+                echo $$stage; \
+        done
