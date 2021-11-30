@@ -1,5 +1,5 @@
 # Pass specific variables from the environment
-cli_vars = skip_export
+cli_vars = skip_export cm_version
 define build_cli
 ifdef $(1)
         PACKER_VARS += -var '$(1)=$(2)'
@@ -18,7 +18,7 @@ install_depends_on := output-boot/win81x64-pro.vdi
 
 output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision
 	$(poweroff)
-	packer build -timestamp-ui -force$(PACKER_VARS) -var-file win81x64-pro.pkrvars.hcl $<
+	packer build -timestamp-ui -force $(PACKER_VARS) -var-file win81x64-pro.pkrvars.hcl $<
 
 .SECONDEXPANSION:
 $(foreach stage,$(filter-out boot export,$(stages)),.snapshots/$(stage)): .snapshots/% : %.pkr.hcl $$($$*_depends_on) | setup
