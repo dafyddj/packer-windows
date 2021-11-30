@@ -24,7 +24,7 @@ output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision
 	packer build -timestamp-ui -force $(PACKER_VARS) -var-file win81x64-pro.pkrvars.hcl $<
 
 .SECONDEXPANSION:
-$(foreach stage,$(filter-out boot export,$(stages)),.snapshots/$(stage)): .snapshots/% : %.pkr.hcl $$($$*_depends_on) | setup
+$(foreach snapshot,$(snapshots),.snapshots/$(snapshot)): .snapshots/% : %.pkr.hcl $$($$*_depends_on) | setup
 	$(poweroff)
 	packer build -timestamp-ui -var-file win81x64-pro.pkrvars.hcl $<
 	touch $@
