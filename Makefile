@@ -10,16 +10,18 @@ $(foreach cli_var,$(cli_vars),$(eval $(call build_cli,$(cli_var),$(value $(cli_v
 poweroff := @-VBoxManage controlvm win81x64-pro poweroff 2>/dev/null || true
 unregister := @-VBoxManage unregistervm win81x64-pro --delete 2>/dev/null || true
 
+stage_files := $(wildcard *.pkr.hcl)
+stages := $(stage_files:.pkr.hcl=)
+
+provision_depends_on := .snapshots/install
+install_depends_on := output-boot/win81x64-pro.vdi
+
 output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision
 	$(poweroff)
 	packer build -timestamp-ui -force$(PACKER_VARS) -var-file win81x64-pro.pkrvars.hcl $<
 
-.snapshots/provision: provision.pkr.hcl .snapshots/install | setup
-	$(poweroff)
-	packer build -timestamp-ui -var-file win81x64-pro.pkrvars.hcl $<
-	touch $@
-
-.snapshots/install: install.pkr.hcl output-boot/win81x64-pro.vdi | setup
+.SECONDEXPANSION:
+$(foreach stage,$(filter-out boot export,$(stages)),.snapshots/$(stage)): .snapshots/% : %.pkr.hcl $$($$*_depends_on) | setup
 	$(poweroff)
 	packer build -timestamp-ui -var-file win81x64-pro.pkrvars.hcl $<
 	touch $@
