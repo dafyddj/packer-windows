@@ -13,7 +13,8 @@ unregister := @-VBoxManage unregistervm win81x64-pro --delete 2>/dev/null || tru
 stage_files := $(wildcard *.pkr.hcl)
 stages := $(stage_files:.pkr.hcl=)
 
-provision_depends_on := .snapshots/install
+provision_depends_on := .snapshots/guestadd
+guestadd_depends_on := .snapshots/install
 install_depends_on := output-boot/win81x64-pro.vdi
 
 output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision
