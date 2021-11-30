@@ -7,14 +7,17 @@ endif
 endef
 $(foreach cli_var,$(cli_vars),$(eval $(call build_cli,$(cli_var),$(value $(cli_var)))))
 
+stage_files := $(wildcard *.pkr.hcl)
+stages := $(stage_files:.pkr.hcl=)
+
+provision_depends_on := .snapshots/install
+install_depends_on := output-win/win81x64-pro.vdi
+
 output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision | poweroff
 	packer build -timestamp-ui -force$(PACKER_VARS) -var-file win81x64-pro.pkrvars.hcl $<
 
-.snapshots/provision: provision.pkr.hcl .snapshots/install | setup
-	packer build -timestamp-ui -var-file win81x64-pro.pkrvars.hcl $<
-	touch $@
-
-.snapshots/install: install.pkr.hcl output-win/win81x64-pro.vdi | setup
+.SECONDEXPANSION:
+$(foreach stage,$(filter-out boot export,$(stages)),.snapshots/$(stage)): .snapshots/% : %.pkr.hcl $$($$*_depends_on) | setup
 	packer build -timestamp-ui -var-file win81x64-pro.pkrvars.hcl $<
 	touch $@
 
