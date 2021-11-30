@@ -46,6 +46,8 @@ build {
       Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
       choco feature enable -n allowGlobalConfirmation
       choco install choco-cleaner --params /NOTASK:TRUE
+      (gc -Raw C:\tools\BCURRAN3\choco-cleaner.ps1) -replace 'Start-Sleep -s 10','Start-Sleep -s 0' `
+        | sc C:\tools\BCURRAN3\choco-cleaner.ps1
       choco install git
       choco install wiztree --install-args /MERGETASKS=!desktopicon
       EOF
