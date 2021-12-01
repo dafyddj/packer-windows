@@ -19,7 +19,7 @@ variable "vm_name" {
   default = "win81x64-pro"
 }
 source "virtualbox-vm" "provision" {
-  attach_snapshot         = "guestadded"
+  attach_snapshot         = "updated"
   boot_wait               = "-1s"
   communicator            = "winrm"
   force_delete_snapshot   = true
