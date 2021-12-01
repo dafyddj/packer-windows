@@ -26,7 +26,7 @@ output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision
 .SECONDEXPANSION:
 $(foreach snapshot,$(snapshots),.snapshots/$(snapshot)): .snapshots/% : %.pkr.hcl $$($$*_depends_on) | setup
 	$(poweroff)
-	packer build -timestamp-ui -var-file win81x64-pro.pkrvars.hcl $<
+	packer build -timestamp-ui -force $(PACKER_VARS) -var-file win81x64-pro.pkrvars.hcl $<
 	touch $@
 
 output-boot/win81x64-pro.vdi: boot.pkr.hcl floppy/*
