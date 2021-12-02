@@ -50,6 +50,7 @@ build {
         | sc C:\tools\BCURRAN3\choco-cleaner.ps1
       choco install git
       choco install wiztree --install-args /MERGETASKS=!desktopicon
+      choco install saltminion --version 3003.3 --params /MinionStart:0
       EOF
     ]
   }
