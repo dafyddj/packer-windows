@@ -45,22 +45,75 @@ build {
   provisioner "powershell" {
     inline = [<<-EOF
       @(
-        "C:\Recovery"
-      ) | % { if (Test-Path $_) {
-                Write-Host "Removing ""$_""..."
-		Remove-Item -Recurse -Force $_ | Out-Null
-	      }
-	    }
-      Write-Host "Setting PageFile to clear at Shutdown..."
-      Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" `
-        -Name "ClearPageFileAtShutdown" -Value 1
+        "C:\Recovery",
+        "C:\Windows\Logs",
+        "C:\Windows\WinSxS\Backup",
+        "C:\Windows\WinSxS\ManifestCache",
+        "C:\Windows\WinSxS\Temp\PendingDeletes"
+      ) | % {
+        Get-ChildItem -Recurse -File $_ |
+        Select-Object -ExpandProperty FullName | % {
+          Write-Host "Removing ""$_"
+          takeown /F $_ /A | Out-Null
+          icacls $_ /grant:r Administrators:F /Q | Out-Null
+          Remove-Item -Recurse -Force $_
+        }
+      }
+
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore
       EOF
     ]
   }
 
   provisioner "powershell" {
-    inline = [
-      "defrag C: /O /H /V",
+    inline = [<<-EOF
+      $ProgressPreference = 'SilentlyContinue'
+      Write-Host "Removing AppX Packages..."
+      Get-AppxProvisionedPackage -Online | % {
+        Write-Host "==> Deprovisioning:" $_.DisplayName
+        $_ | Remove-AppxProvisionedPackage -Online | Out-Null
+      }
+      Get-AppxPackage | ? { $_.InstallLocation -like "*WindowsApps*" -and
+        $_.Name -notlike "*VCLibs*" -and
+        $_.Name -notlike "*WinJS*" } | % {
+        Write-Host "==> Removing:" $_.Name
+        $_ | Remove-AppxPackage | Out-Null
+      }
+      EOF
+    ]
+  }
+
+  provisioner "powershell" {
+    inline = [<<-EOF
+      Write-Host "Zeroing out free space..."
+      $FilePath ="C:\zero.tmp"
+      $Volume = Get-Volume -DriveLetter C
+      $ArraySize = 1MB
+      $SpaceToLeave = $Volume.Size * 0.005
+      $FileSize = $Volume.SizeRemaining - $SpacetoLeave
+      $ZeroArray = New-Object byte[]($ArraySize)
+
+      $Stream= [io.File]::OpenWrite($FilePath)
+      try {
+        $CurFileSize = 0
+        while ($CurFileSize -lt $FileSize) {
+          $Stream.Write($ZeroArray, 0, $ZeroArray.Length)
+          $CurFileSize += $ZeroArray.Length
+        }
+      }
+      finally {
+        if ($Stream) {
+          $Stream.Close()
+        }
+      }
+      Remove-Item $FilePath
+
+      defrag C: /O /H /V
+
+      Write-Host "Setting PageFile to clear at Shutdown..."
+      Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" `
+        -Name "ClearPageFileAtShutdown" -Value 1
+      EOF
     ]
   }
 }
