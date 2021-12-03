@@ -1,5 +1,5 @@
 # Pass specific variables from the environment
-cli_vars = skip_export cm_version update_limit
+cli_vars = cm_version search_criteria skip_export update_limit
 define build_cli
 ifdef $(1)
         PACKER_VARS += -var '$(1)=$(2)'

@@ -3,6 +3,7 @@
 packer_cache/
 output-*
 box/
+*.auto.pkrvars.hcl
 *.box
 *.tar.gz
 iso

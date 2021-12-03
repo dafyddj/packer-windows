@@ -7,6 +7,11 @@ packer {
   }
 }
 
+variable "filters" {
+  type    = list(string)
+  default = ["include:$true"]
+}
+
 variable "headless" {
   type    = string
   default = "true"
@@ -16,6 +21,11 @@ variable "iso_checksum" {
 }
 
 variable "iso_url" {
+}
+
+variable "search_criteria" {
+  type    = string
+  default = "AutoSelectOnWebSites=1 and IsInstalled=0"
 }
 
 variable "shutdown_command" {
@@ -55,7 +65,8 @@ build {
 
   provisioner "windows-update" {
     # Install Important updates only
-    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
+    filters         = var.filters
+    search_criteria = var.search_criteria
     update_limit    = var.update_limit
   }
 
