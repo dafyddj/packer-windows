@@ -58,4 +58,26 @@ build {
     search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
     update_limit    = var.update_limit
   }
+
+  provisioner "powershell" {
+    inline = [<<-EOF
+      $cleanupTypes = @(
+        "Update Cleanup",
+        "Windows Defender"
+      )
+      $regKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches"
+      $state = "StateFlags0100"
+
+      Write-Host "Post-Update Cleanup..."
+      foreach ($cleanup in $cleanupTypes) {
+        Write-Host "==> Setting:" $cleanup
+        New-ItemProperty -Path "$regKey\$cleanup" -Name $state -Value 2 -PropertyType DWord -Force | Out-Null
+      }
+      if (Test-Path "$env:SystemRoot\System32\cleanmgr.exe") {
+        Write-Host "==> Running ""cleanmgr""..."
+        Start-Process -Wait cleanmgr -Args /sagerun:100
+      }
+      EOF
+    ]
+  }
 }
