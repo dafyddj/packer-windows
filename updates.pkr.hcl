@@ -7,6 +7,11 @@ packer {
   }
 }
 
+variable "filters" {
+  type    = list(string)
+  default = ["include:$true"]
+}
+
 variable "headless" {
   type    = string
   default = "true"
@@ -16,6 +21,11 @@ variable "iso_checksum" {
 }
 
 variable "iso_url" {
+}
+
+variable "search_criteria" {
+  type    = string
+  default = "AutoSelectOnWebSites=1 and IsInstalled=0"
 }
 
 variable "shutdown_command" {
@@ -55,7 +65,30 @@ build {
 
   provisioner "windows-update" {
     # Install Important updates only
-    search_criteria = "AutoSelectOnWebSites=1 and IsInstalled=0"
+    filters         = var.filters
+    search_criteria = var.search_criteria
     update_limit    = var.update_limit
+  }
+
+  provisioner "powershell" {
+    inline = [<<-EOF
+      $cleanupTypes = @(
+        "Update Cleanup",
+        "Windows Defender"
+      )
+      $regKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches"
+      $state = "StateFlags0100"
+
+      Write-Host "Post-Update Cleanup..."
+      foreach ($cleanup in $cleanupTypes) {
+        Write-Host "==> Setting:" $cleanup
+        New-ItemProperty -Path "$regKey\$cleanup" -Name $state -Value 2 -PropertyType DWord -Force | Out-Null
+      }
+      if (Test-Path "$env:SystemRoot\System32\cleanmgr.exe") {
+        Write-Host "==> Running ""cleanmgr""..."
+        Start-Process -Wait cleanmgr -Args /sagerun:100
+      }
+      EOF
+    ]
   }
 }
