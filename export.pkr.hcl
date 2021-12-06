@@ -51,9 +51,9 @@ build {
         "C:\Windows\WinSxS\ManifestCache",
         "C:\Windows\WinSxS\Temp\PendingDeletes"
       ) | % {
-        Get-ChildItem -Recurse -File $_ |
+        Get-ChildItem -Force -Recurse -File $_ |
         Select-Object -ExpandProperty FullName | % {
-          Write-Host "Removing ""$_"
+          Write-Host "Removing ""$_"""
           takeown /F $_ /A | Out-Null
           icacls $_ /grant:r Administrators:F /Q | Out-Null
           Remove-Item -Recurse -Force $_
@@ -115,5 +115,10 @@ build {
         -Name "ClearPageFileAtShutdown" -Value 1
       EOF
     ]
+  }
+
+  post-processor "vagrant" {
+    output               = "box/${source.type}/${var.vm_name}-salt.box"
+    vagrantfile_template = "tpl/vagrantfile-${var.vm_name}.tpl"
   }
 }
