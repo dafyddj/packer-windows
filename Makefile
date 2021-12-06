@@ -19,7 +19,7 @@ guestadd_depends_on  := .snapshots/install
 updates_depends_on   := .snapshots/guestadd
 provision_depends_on := .snapshots/updates
 
-output-export/win81x64-pro-disk001.vmdk: export.pkr.hcl .snapshots/provision
+box/virtualbox-vm/win81x64-pro-salt.box: export.pkr.hcl .snapshots/provision
 	$(poweroff)
 	packer build -timestamp-ui -force $(PACKER_VARS) -var-file win81x64-pro.pkrvars.hcl $<
 
