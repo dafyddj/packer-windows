@@ -7,6 +7,11 @@ packer {
   }
 }
 
+variable "disable_breakpoint" {
+  type    = bool
+  default = true
+}
+
 variable "filters" {
   type    = list(string)
   default = ["include:$true"]
@@ -24,6 +29,7 @@ variable "iso_url" {
 }
 
 variable "search_criteria" {
+  # Install Important updates only
   type    = string
   default = "AutoSelectOnWebSites=1 and IsInstalled=0"
 }
@@ -64,10 +70,19 @@ build {
   sources = ["source.virtualbox-vm.updates"]
 
   provisioner "windows-update" {
-    # Install Important updates only
     filters         = var.filters
     search_criteria = var.search_criteria
     update_limit    = var.update_limit
+  }
+
+  provisioner "windows-update" {
+    filters         = var.filters
+    search_criteria = var.search_criteria
+    update_limit    = var.update_limit
+  }
+
+  provisioner "breakpoint" {
+    disable = var.disable_breakpoint
   }
 
   provisioner "powershell" {
@@ -85,9 +100,14 @@ build {
         New-ItemProperty -Path "$regKey\$cleanup" -Name $state -Value 2 -PropertyType DWord -Force | Out-Null
       }
       if (Test-Path "$env:SystemRoot\System32\cleanmgr.exe") {
-        Write-Host "==> Running ""cleanmgr""..."
+        Write-Host "==> Running ""cleanmgr"""
         Start-Process -Wait cleanmgr -Args /sagerun:100
       }
+
+      Write-Host "==> Running ""Dism ... /StartComponentCleanup /ResetBase"""
+      Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase
+
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore
       EOF
     ]
   }

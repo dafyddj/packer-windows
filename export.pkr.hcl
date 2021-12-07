@@ -1,3 +1,8 @@
+variable "disable_breakpoint" {
+  type    = bool
+  default = true
+}
+
 variable "headless" {
   type    = string
   default = "true"
