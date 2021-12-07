@@ -56,6 +56,9 @@ build {
       choco install git
       choco install wiztree --install-args /MERGETASKS=!desktopicon
       choco install saltminion --version 3003.3 --params /MinionStart:0
+      # Salt installer doesn't correctly set Minion service
+      Set-Service salt-minion -StartupType Manual
+      Stop-Service salt-minion
       EOF
     ]
   }
