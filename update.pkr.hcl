@@ -110,6 +110,13 @@ build {
       Write-Host "==> Running ""Dism ... /StartComponentCleanup /ResetBase"""
       Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase | Select-String -NotMatch -Pattern \[.*\]
 
+      # $ProgressPreference = 'SilentlyContinue'
+      # Write-Host "Removing Optional Windows Features..."
+      # Get-WindowsOptionalFeature -Online | ? { $_.State -eq "Disabled" } | % {
+      #   Write-Host "==> Removing:" $_.FeatureName
+      #   $_ | Disable-WindowsOptionalFeature -Online -Remove -NoRestart | Out-Null
+      # }
+
       Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\]
       EOF
     ]
