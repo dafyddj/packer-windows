@@ -22,6 +22,11 @@ variable "cpus" {
   default = "2"
 }
 
+variable "disable_breakpoint" {
+  type    = bool
+  default = true
+}
+
 variable "disk_size" {
   type    = string
   default = "20480"
