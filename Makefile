@@ -1,11 +1,14 @@
 # Pass specific variables from the environment
-cli_vars = cm_version disable_breakpoint search_criteria skip_export update_limit
+cli_vars = cm_version disable_breakpoint prefix search_criteria skip_export update_limit
 define build_cli
 ifdef $(1)
         PACKER_VARS += -var '$(1)=$(2)'
 endif
 endef
 $(foreach cli_var,$(cli_vars),$(eval $(call build_cli,$(cli_var),$(value $(cli_var)))))
+
+auto_version := $(shell bin/version)
+VERSION ?= $(auto_version)
 
 poweroff   := @-VBoxManage controlvm win81x64-pro poweroff 2>/dev/null || true
 unregister := @-VBoxManage unregistervm win81x64-pro --delete 2>/dev/null || true
@@ -33,6 +36,10 @@ output-boot/win81x64-pro.vdi: boot.pkr.hcl floppy/*
 	$(poweroff)
 	$(unregister)
 	packer build -timestamp-ui -force -var-file win81x64-pro.pkrvars.hcl $<
+
+.upload: upload.pkr.hcl box/virtualbox-vm/win81x64-pro-salt.box
+	packer build -timestamp-ui $(PACKER_VARS) -var version=$(VERSION) $<
+	touch $@
 
 setup: .snapshots
 
