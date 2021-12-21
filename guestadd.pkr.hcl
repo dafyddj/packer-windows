@@ -3,12 +3,6 @@ variable "headless" {
   default = "true"
 }
 
-variable "iso_checksum" {
-}
-
-variable "iso_url" {
-}
-
 variable "shutdown_command" {
   type    = string
   default = "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\""
@@ -31,14 +25,22 @@ source "virtualbox-vm" "guestadd" {
   skip_export             = true
   target_snapshot         = "guestadded"
   virtualbox_version_file = ""
-  vm_name                 = "${var.vm_name}"
   winrm_password          = "vagrant"
   winrm_timeout           = "10000s"
   winrm_username          = "vagrant"
 }
 
 build {
-  sources = ["source.virtualbox-vm.guestadd"]
+  name = "guestadd"
+
+  source "virtualbox-vm.guestadd" {
+    name    = "win81"
+    vm_name = "win81x64-pro"
+  }
+  source "virtualbox-vm.guestadd" {
+    name    = "win10"
+    vm_name = "win10x64-pro"
+  }
 
   provisioner "powershell" {
     inline = [<<-EOF

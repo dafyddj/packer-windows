@@ -8,12 +8,6 @@ variable "headless" {
   default = "true"
 }
 
-variable "iso_checksum" {
-}
-
-variable "iso_url" {
-}
-
 variable "shutdown_command" {
   type    = string
   default = "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\""
@@ -24,10 +18,6 @@ variable "skip_export" {
   default = false
 }
 
-variable "vm_name" {
-  type    = string
-  default = "win81x64-pro"
-}
 source "virtualbox-vm" "export" {
   attach_snapshot         = "provisioned"
   boot_wait               = "-1s"
@@ -38,14 +28,23 @@ source "virtualbox-vm" "export" {
   shutdown_command        = "${var.shutdown_command}"
   skip_export             = "${var.skip_export}"
   virtualbox_version_file = ""
-  vm_name                 = "${var.vm_name}"
   winrm_password          = "vagrant"
   winrm_timeout           = "10000s"
   winrm_username          = "vagrant"
 }
 
 build {
-  sources = ["source.virtualbox-vm.export"]
+  name = "export"
+
+  source "virtualbox-vm.export" {
+    name    = "win81"
+    vm_name = "win81x64-pro"
+  }
+
+  source "virtualbox-vm.export" {
+    name    = "win10"
+    vm_name = "win10x64-pro"
+  }
 
   provisioner "powershell" {
     inline = [<<-EOF
@@ -79,6 +78,7 @@ build {
         $_ | Remove-AppxProvisionedPackage -Online | Out-Null
       }
       Get-AppxPackage | ? { $_.InstallLocation -like "*WindowsApps*" -and
+        $_.Name -notlike "*UI.Xaml*" -and
         $_.Name -notlike "*VCLibs*" -and
         $_.Name -notlike "*WinJS*" } | % {
         Write-Host "==> Removing:" $_.Name
@@ -123,7 +123,7 @@ build {
   }
 
   post-processor "vagrant" {
-    output               = "box/${source.type}/${var.vm_name}-salt.box"
-    vagrantfile_template = "tpl/vagrantfile-${var.vm_name}.tpl"
+    output               = "box/${source.type}/${source.name}x64-pro-salt.box"
+    vagrantfile_template = "tpl/vagrantfile-${source.name}x64-pro.tpl"
   }
 }
