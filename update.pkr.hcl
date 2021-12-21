@@ -108,9 +108,9 @@ build {
       }
 
       Write-Host "==> Running ""Dism ... /StartComponentCleanup /ResetBase"""
-      Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase
+      Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase | Select-String -NotMatch -Pattern \[.*\]
 
-      Dism /Online /Cleanup-Image /AnalyzeComponentStore
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\]
       EOF
     ]
   }
