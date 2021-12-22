@@ -54,7 +54,7 @@ variable "iso_url" {
 
 variable "memory" {
   type    = string
-  default = "1536"
+  default = "2048"
 }
 
 variable "shutdown_command" {
@@ -65,16 +65,6 @@ variable "shutdown_command" {
 variable "update_limit" {
   type    = number
   default = 1000
-}
-
-variable "version" {
-  type    = string
-  default = "0.1.0"
-}
-
-variable "vm_name" {
-  type    = string
-  default = "win81x64-pro"
 }
 
 source "virtualbox-iso" "boot" {
@@ -90,7 +80,7 @@ source "virtualbox-iso" "boot" {
     "floppy/fixnetwork.ps1",
     "floppy/install-winrm.cmd",
     "floppy/powerconfig.bat",
-    "floppy/${var.vm_name}/Autounattend.xml",
+    "floppy/${source.name}x64-pro/Autounattend.xml",
     "floppy/zz-start-sshd.cmd"
   ]
   guest_additions_mode     = "disable"
@@ -115,15 +105,15 @@ build {
     guest_os_type = "${var.guest_os_type}"
     iso_checksum  = "${var.iso_checksum}"
     iso_url       = "${var.iso_url}"
-    name          = "windows81"
-    vm_name       = "${var.vm_name}"
+    name          = "win81"
+    vm_name       = "win81x64-pro"
   }
 
   source "virtualbox-iso.boot" {
     guest_os_type = "Windows10_64"
     iso_checksum  = "BD9E41BDF9E23DCF5A0592F3BFE794584C80F1415727ED234E8929F656221836"
     iso_url       = "iso/Win10_20H2_v2_EnglishInternational_x64.iso"
-    name          = "windows10"
+    name          = "win10"
     vm_name       = "win10x64-pro"
   }
 
