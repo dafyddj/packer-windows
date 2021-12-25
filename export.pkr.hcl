@@ -64,7 +64,7 @@ build {
         }
       }
 
-      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\]
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\],^$
       EOF
     ]
   }

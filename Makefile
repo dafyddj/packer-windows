@@ -1,5 +1,9 @@
+ifeq ($(origin prefix), command line)
+	PACKER_VARS += -var 'prefix=$(prefix)'
+endif
+
 # Pass specific variables from the environment
-cli_vars = cm_version disable_breakpoint prefix search_criteria skip_export update_limit
+cli_vars = cm_version disable_breakpoint search_criteria skip_export update_limit
 define build_cli
 ifdef $(1)
         PACKER_VARS += -var '$(1)=$(2)'
@@ -25,7 +29,8 @@ $(1)_guestadd_depends_on  := install/$(1)
 $(1)_update_depends_on    := guestadd/$(1)
 $(1)_provision_depends_on := update/$(1)
 
-box/$(1)/virtualbox-vm/$(1)x64-pro-salt.box: export.pkr.hcl provision/$(1)
+export/$(1): box/virtualbox-vm/$(1)x64-pro-salt.box
+box/virtualbox-vm/$(1)x64-pro-salt.box: export.pkr.hcl provision/$(1)
 	$(poweroff)
 	packer build -timestamp-ui -force -only \*.$(1) $(PACKER_VARS) $$<
 
@@ -40,7 +45,7 @@ output-boot/$(1)/$(1)x64-pro.vdi: boot.pkr.hcl floppy/*
 	$$($(1)_unregister)
 	packer build -timestamp-ui -force -only \*.$(1) $(PACKER_VARS) $$<
 
-upload/$(1): upload.pkr.hcl box/$(1)/virtualbox-vm/$(1)x64-pro-salt.box | setup
+upload/$(1): upload.pkr.hcl box/virtualbox-vm/$(1)x64-pro-salt.box | setup
 	packer build -timestamp-ui -only \*.$(1) $(PACKER_VARS) -var version=$(VERSION) $$<
 	touch $$@
 endef

@@ -78,18 +78,21 @@ build {
     update_limit    = var.update_limit
   }
 
-  provisioner "windows-update" {
-    filters         = var.filters
-    search_criteria = var.search_criteria
-    update_limit    = var.update_limit
-  }
-
   provisioner "breakpoint" {
     disable = var.disable_breakpoint
   }
 
   provisioner "powershell" {
     inline = [<<-EOF
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\],^$
+
+      $ProgressPreference = 'SilentlyContinue'
+      Write-Host "Removing Optional Windows Features..."
+      Get-WindowsOptionalFeature -Online | ? { $_.State -eq "Disabled" } | % {
+        Write-Host "==> Removing:" $_.FeatureName
+        $_ | Disable-WindowsOptionalFeature -Online -Remove -NoRestart | Out-Null
+      }
+
       $cleanupTypes = @(
         "Update Cleanup",
         "Windows Defender"
@@ -97,27 +100,23 @@ build {
       $regKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches"
       $state = "StateFlags0100"
 
-      Write-Host "Post-Update Cleanup..."
-      foreach ($cleanup in $cleanupTypes) {
-        Write-Host "==> Setting:" $cleanup
-        New-ItemProperty -Path "$regKey\$cleanup" -Name $state -Value 2 -PropertyType DWord -Force | Out-Null
-      }
-      if (Test-Path "$env:SystemRoot\System32\cleanmgr.exe") {
-        Write-Host "==> Running ""cleanmgr"""
-        Start-Process -Wait cleanmgr -Args /sagerun:100
+      [version]$OsVersion = (Get-CimInstance CIM_OperatingSystem).Version
+      if ($OsVersion.Major -lt 10) {
+        Write-Host "Post-Update Cleanup..."
+        foreach ($cleanup in $cleanupTypes) {
+          Write-Host "==> Setting:" $cleanup
+          New-ItemProperty -Path "$regKey\$cleanup" -Name $state -Value 2 -PropertyType DWord -Force | Out-Null
+        }
+        if (Test-Path "$env:SystemRoot\System32\cleanmgr.exe") {
+          Write-Host "==> Running ""cleanmgr"""
+          Start-Process -Wait cleanmgr -Args /sagerun:100
+        }
       }
 
       Write-Host "==> Running ""Dism ... /StartComponentCleanup /ResetBase"""
-      Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase | Select-String -NotMatch -Pattern \[.*\]
+      Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase | Select-String -NotMatch -Pattern \[.*\],^$
 
-      # $ProgressPreference = 'SilentlyContinue'
-      # Write-Host "Removing Optional Windows Features..."
-      # Get-WindowsOptionalFeature -Online | ? { $_.State -eq "Disabled" } | % {
-      #   Write-Host "==> Removing:" $_.FeatureName
-      #   $_ | Disable-WindowsOptionalFeature -Online -Remove -NoRestart | Out-Null
-      # }
-
-      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\]
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\],^$
       EOF
     ]
   }
