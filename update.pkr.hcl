@@ -22,12 +22,6 @@ variable "headless" {
   default = "true"
 }
 
-variable "iso_checksum" {
-}
-
-variable "iso_url" {
-}
-
 variable "search_criteria" {
   # Install Important updates only
   type    = string
@@ -48,7 +42,7 @@ variable "vm_name" {
   default = "win81x64-pro"
 }
 
-source "virtualbox-vm" "updates" {
+source "virtualbox-vm" "update" {
   attach_snapshot         = "guestadded"
   boot_wait               = "-1s"
   communicator            = "winrm"
@@ -60,19 +54,22 @@ source "virtualbox-vm" "updates" {
   skip_export             = true
   target_snapshot         = "updated"
   virtualbox_version_file = ""
-  vm_name                 = "${var.vm_name}"
   winrm_password          = "vagrant"
   winrm_timeout           = "10000s"
   winrm_username          = "vagrant"
 }
 
 build {
-  sources = ["source.virtualbox-vm.updates"]
+  name = "update"
 
-  provisioner "windows-update" {
-    filters         = var.filters
-    search_criteria = var.search_criteria
-    update_limit    = var.update_limit
+  source "virtualbox-vm.update" {
+    name    = "win81"
+    vm_name = "win81x64-pro"
+  }
+
+  source "virtualbox-vm.update" {
+    name    = "win10"
+    vm_name = "win10x64-pro"
   }
 
   provisioner "windows-update" {
@@ -87,6 +84,15 @@ build {
 
   provisioner "powershell" {
     inline = [<<-EOF
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\],^$
+
+      $ProgressPreference = 'SilentlyContinue'
+      Write-Host "Removing Optional Windows Features..."
+      Get-WindowsOptionalFeature -Online | ? { $_.State -eq "Disabled" } | % {
+        Write-Host "==> Removing:" $_.FeatureName
+        $_ | Disable-WindowsOptionalFeature -Online -Remove -NoRestart | Out-Null
+      }
+
       $cleanupTypes = @(
         "Update Cleanup",
         "Windows Defender"
@@ -94,20 +100,23 @@ build {
       $regKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches"
       $state = "StateFlags0100"
 
-      Write-Host "Post-Update Cleanup..."
-      foreach ($cleanup in $cleanupTypes) {
-        Write-Host "==> Setting:" $cleanup
-        New-ItemProperty -Path "$regKey\$cleanup" -Name $state -Value 2 -PropertyType DWord -Force | Out-Null
-      }
-      if (Test-Path "$env:SystemRoot\System32\cleanmgr.exe") {
-        Write-Host "==> Running ""cleanmgr"""
-        Start-Process -Wait cleanmgr -Args /sagerun:100
+      [version]$OsVersion = (Get-CimInstance CIM_OperatingSystem).Version
+      if ($OsVersion.Major -lt 10) {
+        Write-Host "Post-Update Cleanup..."
+        foreach ($cleanup in $cleanupTypes) {
+          Write-Host "==> Setting:" $cleanup
+          New-ItemProperty -Path "$regKey\$cleanup" -Name $state -Value 2 -PropertyType DWord -Force | Out-Null
+        }
+        if (Test-Path "$env:SystemRoot\System32\cleanmgr.exe") {
+          Write-Host "==> Running ""cleanmgr"""
+          Start-Process -Wait cleanmgr -Args /sagerun:100
+        }
       }
 
       Write-Host "==> Running ""Dism ... /StartComponentCleanup /ResetBase"""
-      Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase
+      Dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase | Select-String -NotMatch -Pattern \[.*\],^$
 
-      Dism /Online /Cleanup-Image /AnalyzeComponentStore
+      Dism /Online /Cleanup-Image /AnalyzeComponentStore | Select-String -NotMatch -Pattern \[.*\],^$
       EOF
     ]
   }

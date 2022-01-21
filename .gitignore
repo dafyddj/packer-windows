@@ -13,4 +13,10 @@ tmp
 *.swp
 Makefile.local
 
+guestadd/
+install/
+provision/
+update/
+upload/
+
 .DS_Store

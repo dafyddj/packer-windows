@@ -2,7 +2,7 @@ packer {
   required_plugins {
     windows-update = {
       version = "0.14.0"
-      source = "github.com/rgl/windows-update"
+      source  = "github.com/rgl/windows-update"
     }
   }
 }
@@ -54,7 +54,7 @@ variable "iso_url" {
 
 variable "memory" {
   type    = string
-  default = "1536"
+  default = "2048"
 }
 
 variable "shutdown_command" {
@@ -67,50 +67,55 @@ variable "update_limit" {
   default = 1000
 }
 
-variable "version" {
-  type    = string
-  default = "0.1.0"
-}
-
-variable "vm_name" {
-  type    = string
-  default = "win81x64-pro"
-}
-
 source "virtualbox-iso" "boot" {
-  communicator         = "winrm"
-  cpus                 = "${var.cpus}"
-  disk_size            = "${var.disk_size}"
-  floppy_files         = ["floppy/00-run-all-scripts.cmd",
-                          "floppy/01-install-wget.cmd",
-                          "floppy/_download.cmd",
-                          "floppy/_packer_config.cmd",
-                          "floppy/disablewinupdate.bat",
-                          "floppy/install-winrm.cmd",
-                          "floppy/oracle-cert.cer",
-                          "floppy/powerconfig.bat",
-                          "floppy/${var.vm_name}/Autounattend.xml",
-                          "floppy/zz-start-sshd.cmd"]
-  guest_additions_mode = "disable"
-  guest_os_type        = "${var.guest_os_type}"
-  headless             = "${var.headless}"
-  hard_drive_discard   = true
+  communicator = "winrm"
+  cpus         = "${var.cpus}"
+  disk_size    = "${var.disk_size}"
+  floppy_files = [
+    "floppy/00-run-all-scripts.cmd",
+    "floppy/01-install-wget.cmd",
+    "floppy/_download.cmd",
+    "floppy/_packer_config.cmd",
+    "floppy/disablewinupdate.bat",
+    "floppy/fixnetwork.ps1",
+    "floppy/install-winrm.cmd",
+    "floppy/powerconfig.bat",
+    "floppy/${source.name}x64-pro/Autounattend.xml",
+    "floppy/zz-start-sshd.cmd"
+  ]
+  guest_additions_mode     = "disable"
+  headless                 = "${var.headless}"
+  hard_drive_discard       = true
   hard_drive_nonrotational = true
-  iso_checksum         = "${var.iso_checksum}"
-  iso_url              = "${var.iso_url}"
-  keep_registered      = true
-  memory               = "${var.memory}"
-  shutdown_command     = "${var.shutdown_command}"
-  skip_export          = true
-  virtualbox_version_file = ""
-  vm_name              = "${var.vm_name}"
-  winrm_password       = "vagrant"
-  winrm_timeout        = "10000s"
-  winrm_username       = "vagrant"
+  keep_registered          = true
+  memory                   = "${var.memory}"
+  output_directory         = "output-boot/${source.name}"
+  shutdown_command         = "${var.shutdown_command}"
+  skip_export              = true
+  virtualbox_version_file  = ""
+  winrm_password           = "vagrant"
+  winrm_timeout            = "10000s"
+  winrm_username           = "vagrant"
 }
-build {
-  sources = ["source.virtualbox-iso.boot"]
 
+build {
+  name = "boot"
+
+  source "virtualbox-iso.boot" {
+    guest_os_type = "${var.guest_os_type}"
+    iso_checksum  = "${var.iso_checksum}"
+    iso_url       = "${var.iso_url}"
+    name          = "win81"
+    vm_name       = "win81x64-pro"
+  }
+
+  source "virtualbox-iso.boot" {
+    guest_os_type = "Windows10_64"
+    iso_checksum  = "06FD4A512C5F3E8D16F77CA909C4F20110329B8CDD5AD101E2AFC0D58B06D416"
+    iso_url       = "iso/Win10_21H2_EnglishInternational_x64.iso"
+    name          = "win10"
+    vm_name       = "win10x64-pro"
+  }
 
   provisioner "powershell" {
     inline = ["Get-Content $env:TEMP/00-run-all-scripts.log.txt"]
