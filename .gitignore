@@ -1,7 +1,9 @@
 .keep_known_hosts
+.snapshots/
 packer_cache/
 output-*
 box/
+*.auto.pkrvars.hcl
 *.box
 *.tar.gz
 iso
@@ -10,5 +12,11 @@ tmp
 .vagrant/
 *.swp
 Makefile.local
+
+guestadd/
+install/
+provision/
+update/
+upload/
 
 .DS_Store
