@@ -41,15 +41,3 @@ build {
     name    = "win10"
     vm_name = "win10x64-pro"
   }
-
-  provisioner "powershell" {
-    inline = [<<-EOF
-      $dl = (Get-Volume | ? FileSystemLabel -Like Vbox*).DriveLetter
-      Write-Host "Installing Oracle TrustedPublisher certs..."
-      Start-Process -Wait -WorkingDirectory $${dl}:\cert VBoxCertUtil -Args add-trusted-publisher,vbox*.cer,--root,vbox*.cer
-      Write-Host "Installing VirtualBox Guest Additions..."
-      Start-Process -Wait $${dl}:VBoxWindowsAdditions.exe -Args /S
-      EOF
-    ]
-  }
-}
