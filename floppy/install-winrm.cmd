@@ -4,6 +4,9 @@
 
 title Enabling Windows Remote Management. Please wait...
 
+echo ==^> Disabling account password expiration for user "%USERNAME%"
+wmic USERACCOUNT WHERE "Name='%USERNAME%'" set PasswordExpires=FALSE
+
 echo ==^> Turning off User Account Control (UAC)
 :: see http://www.howtogeek.com/howto/windows-vista/enable-or-disable-uac-from-the-windows-vista-command-line/
 reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f
