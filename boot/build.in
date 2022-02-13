@@ -60,7 +60,7 @@ source "virtualbox-iso" "boot" {
   hard_drive_nonrotational = true
   keep_registered          = true
   memory                   = "${var.memory}"
-  output_directory         = "../vms"
+  output_directory         = "../vms/${source.name}"
   shutdown_command         = "${var.shutdown_command}"
   skip_export              = true
   virtualbox_version_file  = ""

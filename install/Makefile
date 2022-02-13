@@ -1,6 +1,11 @@
-.DEFAULT_GOAL := .snapshot
+win_vers = win81 win10
 
-.snapshot: main.pkr.hcl ../vms/win81x64-pro.vdi
-	@-VBoxManage controlvm win81x64-pro poweroff 2>/dev/null || true
-	packer build -timestamp-ui -force -only \*.win81 .
+all: $(win_vers)
+
+$(win_vers): %: .%.snapshot
+
+.SECONDEXPANSION:
+.%.snapshot: main.pkr.hcl ../vms/$$*/$$*x64-pro.vdi
+	@-VBoxManage controlvm $*x64-pro poweroff 2>/dev/null || true
+	packer build -timestamp-ui -force -only \*.$* .
 	touch $@
