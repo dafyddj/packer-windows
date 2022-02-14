@@ -1,5 +1,6 @@
 win_vers = win81 win10
 
+.PHONY: all $(win_vers)
 all: $(win_vers)
 
 $(win_vers): %: ../vms/%/%x64-pro.vdi
@@ -12,4 +13,3 @@ $(win_vers): %: ../vms/%/%x64-pro.vdi
 main.cat.pkr.hcl: build.in provision.in
 	cat $^ > $@
 	echo } >> $@
-	packer validate .

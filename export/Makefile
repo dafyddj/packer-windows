@@ -1,5 +1,6 @@
 win_vers = win81 win10
 
+.PHONY: all $(win_vers)
 all: $(win_vers)
 
 $(win_vers): %: ../box/virtualbox-vm/%x64-pro-salt.box
@@ -12,4 +13,3 @@ $(win_vers): %: ../box/virtualbox-vm/%x64-pro-salt.box
 main.cat.pkr.hcl: build.in provision.in
 	cat $^ > $@
 	echo } >> $@ 
-	packer validate .

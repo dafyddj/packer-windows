@@ -4,6 +4,7 @@
 # Force Unix-style line endings on these files
 *.hcl eol=lf
 *.in eol=lf
+*.mk eol=lf
 *.sh eol=lf
 ks.cfg eol=lf
 preseed.cfg eol=lf

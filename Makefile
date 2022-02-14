@@ -1,11 +1,10 @@
-STAGES = boot install guestadd update provision export
+stages := boot install guestadd update provision export
 
-.PHONY: stages $(STAGES)
+.PHONY: all $(stages)
+all: $(stages)
 
-stages: $(STAGES)
-
-$(STAGES):
-	$(MAKE) -C $@
+$(stages):
+	$(MAKE) -C $@ $(OS)
 
 install: boot
 guestadd: install
