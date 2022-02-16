@@ -1,10 +1,30 @@
   provisioner "powershell" {
+    only   = [
+      "virtualbox-vm.win81",
+      "virtualbox-vm.win10",
+    ]
     inline = [<<-EOF
       $dl = (Get-Volume | ? FileSystemLabel -Like Vbox*).DriveLetter
       Write-Host "Installing Oracle TrustedPublisher certs..."
       Start-Process -Wait -WorkingDirectory $${dl}:\cert VBoxCertUtil -Args add-trusted-publisher,vbox*.cer,--root,vbox*.cer
       Write-Host "Installing VirtualBox Guest Additions..."
-      Start-Process -Wait $${dl}:VBoxWindowsAdditions.exe -Args /S
+      Start-Process -Wait $${dl}:\VBoxWindowsAdditions.exe -Args /S
+      EOF
+    ]
+  }
+  provisioner "powershell" {
+    only   = [
+      "vmware-iso.win81",
+      "vmware-iso.win10",
+    ]
+    inline = [<<-EOF
+      $isoPath = "C:\Users\vagrant\windows.iso"
+      Mount-DiskImage $isoPath
+      $dl = (Get-Volume | ? FileSystemLabel -Like VMware*).DriveLetter
+      Write-Host "Installing VMware Tools..."
+      Start-Process -Wait $${dl}:\setup64.exe -Args /S,/v,'"/qn REBOOT=R ADDLOCAL=ALL"'
+      Dismount-DiskImage $isoPath
+      Remove-Item $isoPath
       EOF
     ]
   }
