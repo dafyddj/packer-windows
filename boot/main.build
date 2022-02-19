@@ -40,8 +40,8 @@ variable "update_limit" {
 
 source "virtualbox-iso" "boot" {
   communicator = "winrm"
-  cpus         = "${var.cpus}"
-  disk_size    = "${var.disk_size}"
+  cpus         = var.cpus
+  disk_size    = var.disk_size
   floppy_files = [
     "../floppy/00-run-all-scripts.cmd",
     "../floppy/01-install-wget.cmd",
@@ -55,15 +55,16 @@ source "virtualbox-iso" "boot" {
     "../floppy/zz-start-sshd.cmd"
   ]
   guest_additions_mode     = "disable"
-  headless                 = "${var.headless}"
+  headless                 = var.headless
   hard_drive_discard       = true
   hard_drive_nonrotational = true
   keep_registered          = true
-  memory                   = "${var.memory}"
-  output_directory         = "../vms/${source.name}"
-  shutdown_command         = "${var.shutdown_command}"
+  memory                   = var.memory
+  output_directory         = "../vms"
+  shutdown_command         = var.shutdown_command
   skip_export              = true
   virtualbox_version_file  = ""
+  vm_name                  = source.name
   winrm_password           = "vagrant"
   winrm_timeout            = "10000s"
   winrm_username           = "vagrant"
@@ -77,7 +78,6 @@ build {
     iso_checksum  = "de3d15afbda350f77c27aad76844477e396e947302d7402c09a16f3fa7254c68"
     iso_url       = "${var.iso_dir}/Win8.1_EnglishInternational_x64.iso"
     name          = "win81"
-    vm_name       = "win81x64-pro"
   }
 
   source "virtualbox-iso.boot" {
@@ -85,5 +85,4 @@ build {
     iso_checksum  = "06fd4a512c5f3e8d16f77ca909c4f20110329b8cdd5ad101e2afc0d58b06d416"
     iso_url       = "${var.iso_dir}/Win10_21H2_EnglishInternational_x64.iso"
     name          = "win10"
-    vm_name       = "win10x64-pro"
   }

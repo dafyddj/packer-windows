@@ -40,3 +40,4 @@ build {
     name    = "win10"
     vm_name = "win10x64-pro"
   }
+}

@@ -1,15 +1,15 @@
-win_vers = win81 win10
+sp := $(subst ,, )
+_walk = $(if $1,$(wildcard /$(subst $(sp),/,$1)/$2) $(call _walk,$(wordlist 2,$(words $1),x $1),$2))
+_find = $(firstword $(call _walk,$(strip $(subst /, ,$1)),$2))
+_ROOT := $(patsubst %/root.mak,%,$(call _find,$(CURDIR),root.mak))
 
-.PHONY: all $(win_vers)
-all: $(win_vers)
+include $(_ROOT)/root.mak
+include $(_ROOT)/top.mak
 
-$(win_vers): %: ../vms/%/%x64-pro.vdi
+$(_MODULE_NAME)_OUTPUT := $(_ROOT)/vms
 
-../vms/%/%x64-pro.vdi: main.cat.pkr.hcl ../floppy/*
-	@-VBoxManage controlvm $*x64-pro poweroff 2>/dev/null || true
-	@-VBoxManage unregistervm $*x64-pro --delete 2>/dev/null || true
-	packer build -timestamp-ui -force -only \*.$* .
+SRCS := main.cat.pkr.hcl
+DEPS != find $(_ROOT)/floppy -type f
+BINARY_EXT := $(_VDIEXT)
 
-main.cat.pkr.hcl: build.in provision.in
-	cat $^ > $@
-	echo } >> $@
+include $(_ROOT)/bottom.mak

@@ -1,16 +1,17 @@
-win_vers = win81 win10
+sp := $(subst ,, )
+_walk = $(if $1,$(wildcard /$(subst $(sp),/,$1)/$2) $(call _walk,$(wordlist 2,$(words $1),x $1),$2))
+_find = $(firstword $(call _walk,$(strip $(subst /, ,$1)),$2))
+_ROOT := $(patsubst %/root.mak,%,$(call _find,$(CURDIR),root.mak))
 
-all: $(win_vers)
+include $(_ROOT)/root.mak
 
-$(win_vers): %: .%.snapshot
+$(call DEPENDS_ON,guestadd)
 
-.SECONDEXPANSION:
-.%.snapshot: main.cat.pkr.hcl ../guestadd/.$$*.snapshot
-	@-VBoxManage controlvm $*x64-pro poweroff 2>/dev/null || true
-	packer build -timestamp-ui -force -only \*.$* .
-	touch $@
+include $(_ROOT)/top.mak
 
-main.cat.pkr.hcl: build.in provision.in
-	cat $^ > $@
-	echo } >> $@
-	packer validate .
+SRCS := main.cat.pkr.hcl
+BINARY_PRE := .
+BINARY_EXT := $(_SNAPEXT)
+DEPS := guestadd-%
+
+include $(_ROOT)/bottom.mak

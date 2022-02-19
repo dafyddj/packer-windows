@@ -8,10 +8,12 @@
 packer_cache/
 output-*/
 
-.*.snapshot
+*.snapshot
 *.auto.pkrvars
 *.auto.pkrvars.hcl
-main.cat.pkr.hcl
-Makefile.local
+*.cat.pkr.hcl
 
 .snapshot
+serial.box
+Makefile.local
+
