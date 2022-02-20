@@ -1,6 +1,7 @@
 /box/
 /vms/
 
+/floppy/_packer_config_local*.cmd
 /iso
 
 .snapshots/

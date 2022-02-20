@@ -1,15 +1,15 @@
 $(_MODULE_NAME)_SRCS := $(addprefix $(_MODULE_PATH)/,$(SRCS)) $(DEPS)
 $(_MODULE_NAME)_BINARIES := $(addsuffix $(BINARY_EXT),$(addprefix $($(_MODULE_NAME)_OUTPUT)/$(BINARY_PRE),$(WIN_VERS)))
+$(_MODULE_NAME)_TARGETS := $(addprefix $(_MODULE_NAME)-,$(WIN_VERS))
 
 ifneq ($(_NO_RULES),T)
 ifneq ($($(_MODULE_NAME)_DEFINED),T)
-all: $($(_MODULE_NAME)_BINARIES)
+all: $($(_MODULE_NAME)_TARGETS)
 
-$(_MODULE_NAME)_2 := $(addprefix $(_MODULE_NAME)-,$(WIN_VERS))
-.PHONY: $(_MODULE_NAME) $($(_MODULE_NAME)_2) $(WIN_VERS)
-$(_MODULE_NAME): $($(_MODULE_NAME)_2)
+.PHONY: $(_MODULE_NAME) $($(_MODULE_NAME)_TARGETS) $(WIN_VERS)
+$(_MODULE_NAME): $($(_MODULE_NAME)_TARGETS)
 $(WIN_VERS): %: $(_MODULE_NAME)-%
-$($(_MODULE_NAME)_2): $(_MODULE_NAME)-%: $($(_MODULE_NAME)_OUTPUT)/$(BINARY_PRE)%$(BINARY_EXT)
+$($(_MODULE_NAME)_TARGETS): $(_MODULE_NAME)-%: $($(_MODULE_NAME)_OUTPUT)/$(BINARY_PRE)%$(BINARY_EXT)
 
 _CLEAN := clean-$(_MODULE_NAME)
 _CLEAN_2 := $(addprefix $(_CLEAN)-,$(WIN_VERS))
@@ -19,23 +19,26 @@ $(_CLEAN): %: $(addprefix %-,$(WIN_VERS))
 $(_CLEAN_2): clean-$(_MODULE_NAME)-%:
 	$(info Cleaning $($(_MODULE_NAME)_OUTPUT)/$*$(BINARY_EXT))
 
+$(_MODULE_NAME)-win81: _OS := win81
+$(_MODULE_NAME)-win10: _OS := win10
 $($(_MODULE_NAME)_BINARIES): _PATH := $(_MODULE_PATH)
-$(BINARY_PRE)%$(_VDIEXT): $($(_MODULE_NAME)_SRCS)
-	$(info Making $@)
-	@$(VBOXMANAGE) controlvm $(*F) poweroff 2>/dev/null || true
-	@$(VBOXMANAGE) unregistervm $(*F) --delete 2>/dev/null || true
-	@$(PACKER) build $(PFLAGS) -only \*.$(*F) $(_PATH)
 
-$(BINARY_PRE)%$(_SNAPEXT): $($(_MODULE_NAME)_SRCS)
+$($(_MODULE_NAME)_OUTPUT)/$(BINARY_PRE)%$(_VDIEXT): $($(_MODULE_NAME)_SRCS)
 	$(info Making $@)
-	@-$(VBOXMANAGE) controlvm $(*F) poweroff 2>/dev/null
-	@$(PACKER) build $(PFLAGS) -only \*.$(*F) $(_PATH)
+	@$(VBOXMANAGE) controlvm $(_OS) poweroff 2>/dev/null || true
+	@$(VBOXMANAGE) unregistervm $(_OS) --delete 2>/dev/null || true
+	@$(PACKER) build $(PFLAGS) -only \*.$(_OS) $(_PATH)
+
+$($(_MODULE_NAME)_OUTPUT)/$(BINARY_PRE)%$(_SNAPEXT): $($(_MODULE_NAME)_SRCS)
+	$(info Making $@)
+	@$(VBOXMANAGE) controlvm $(_OS) poweroff 2>/dev/null || true
+	@$(PACKER) build $(PFLAGS) -only \*.$(_OS) $(_PATH)
 	@touch $@
 
-$(BINARY_PRE)%$(_BOXEXT): $($(_MODULE_NAME)_SRCS)
+$($(_MODULE_NAME)_OUTPUT)/$(BINARY_PRE)%$(_BOXEXT): $($(_MODULE_NAME)_SRCS)
 	$(info Making $@)
-	@-$(VBOXMANAGE) controlvm $(*F) poweroff 2>/dev/null
-	@$(PACKER) build $(PFLAGS) -only \*.$(*F) $(_PATH)
+	@$(VBOXMANAGE) controlvm $(_OS) poweroff 2>/dev/null || true
+	@$(PACKER) build $(PFLAGS) -only \*.$(_OS) $(_PATH)
 
 %.cat.pkr.hcl: %.build %.provision
 	$(info Making $@)
