@@ -8,6 +8,11 @@ variable "headless" {
   default = "true"
 }
 
+variable "root_dir" {
+  type    = string
+  default = ".."
+}
+
 variable "shutdown_command" {
   type    = string
   default = "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\""
@@ -23,11 +28,12 @@ source "virtualbox-vm" "export" {
   boot_wait               = "-1s"
   communicator            = "winrm"
   guest_additions_mode    = "disable"
-  headless                = "${var.headless}"
+  headless                = var.headless
   keep_registered         = true
-  shutdown_command        = "${var.shutdown_command}"
-  skip_export             = "${var.skip_export}"
+  shutdown_command        = var.shutdown_command
+  skip_export             = var.skip_export
   virtualbox_version_file = ""
+  vm_name                 = source.name
   winrm_password          = "vagrant"
   winrm_timeout           = "10000s"
   winrm_username          = "vagrant"
@@ -38,10 +44,8 @@ build {
 
   source "virtualbox-vm.export" {
     name    = "win81"
-    vm_name = "win81x64-pro"
   }
 
   source "virtualbox-vm.export" {
     name    = "win10"
-    vm_name = "win10x64-pro"
   }

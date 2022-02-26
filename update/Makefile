@@ -9,9 +9,10 @@ $(call DEPENDS_ON,guestadd)
 
 include $(_ROOT)/top.mak
 
-SRCS := main.cat.pkr.hcl
+srcs := main.cat.pkr.hcl
 BINARY_PRE := .
-BINARY_EXT := $(_SNAPEXT)
-DEPS := guestadd-%
+BINARY_EXT := $(snapext)
+
+$(_MODULE_NAME)_DEPENDS_ON := guestadd_ARTIFACT_$$*
 
 include $(_ROOT)/bottom.mak

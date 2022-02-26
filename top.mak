@@ -1,5 +1,3 @@
-_OUTTOP ?= /tmp/out
-
 .PHONY: all
 all:
 
@@ -15,15 +13,16 @@ _MODULE_PATH := $(_ROOT)/$(_MODULE)
 _MODULE_NAME := $(subst /,_,$(_MODULE))
 $(_MODULE_NAME)_OUTPUT := $(_MODULE_PATH)
 
-_BOXEXT := .box
-_SNAPEXT := .snapshot
-_VDIEXT := .vdi
+vdiext := .vdi
+snapext := .snapshot
+boxext := .box
 
-WIN_VERS := win81 win10
+win_vers := win81 win10
 
 BINARY_PRE :=
+extra_srcs :=
 
 PACKER := packer
-PFLAGS := -timestamp-ui -force
+PFLAGS := -timestamp-ui -force -var "root_dir=$(_ROOT)"
 
 VBOXMANAGE := VBoxManage

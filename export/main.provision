@@ -75,6 +75,6 @@
   }
 
   post-processor "vagrant" {
-    output               = "../box/${source.type}/${source.name}x64-pro-salt.box"
-    vagrantfile_template = "../tpl/vagrantfile-${source.name}x64-pro.tpl"
+    output               = "${var.root_dir}/box/${source.name}.box"
+    vagrantfile_template = "${var.root_dir}/tpl/vagrantfile-${source.name}x64-pro.tpl"
   }

@@ -9,9 +9,10 @@ $(call DEPENDS_ON,boot)
 
 include $(_ROOT)/top.mak
 
-SRCS := main.pkr.hcl
+srcs := main.pkr.hcl
 BINARY_PRE := .
-BINARY_EXT := $(_SNAPEXT)
-DEPS := boot-%
+BINARY_EXT := $(snapext)
+
+$(_MODULE_NAME)_DEPENDS_ON := boot_ARTIFACT_$$*
 
 include $(_ROOT)/bottom.mak

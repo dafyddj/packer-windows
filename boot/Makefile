@@ -6,10 +6,10 @@ _ROOT := $(patsubst %/root.mak,%,$(call _find,$(CURDIR),root.mak))
 include $(_ROOT)/root.mak
 include $(_ROOT)/top.mak
 
-$(_MODULE_NAME)_OUTPUT := $(_ROOT)/vms
+srcs := main.cat.pkr.hcl
+extra_srcs != find $(_ROOT)/floppy -type f
+BINARY_EXT := $(vdiext)
 
-SRCS := main.cat.pkr.hcl
-DEPS != find $(_ROOT)/floppy -type f
-BINARY_EXT := $(_VDIEXT)
+$(_MODULE_NAME)_OUTPUT := $(_ROOT)/vms
 
 include $(_ROOT)/bottom.mak
