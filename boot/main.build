@@ -20,15 +20,22 @@ variable "headless" {
 
 variable "iso_dir" {
   type    = string
+  default = "../iso"
 }
 
 variable "iso_url" {
   type    = string
+  default = "https://example.com/win.iso"
 }
 
 variable "memory" {
   type    = string
   default = "2048"
+}
+
+variable "output_dir" {
+  type    = string
+  default = "../vms"
 }
 
 variable "root_dir" {
@@ -68,7 +75,7 @@ source "virtualbox-iso" "boot" {
   hard_drive_nonrotational = true
   keep_registered          = true
   memory                   = var.memory
-  output_directory         = "${var.root_dir}/vms"
+  output_directory         = "${var.output_dir}"
   shutdown_command         = var.shutdown_command
   skip_export              = true
   virtualbox_version_file  = ""
@@ -99,5 +106,6 @@ build {
       "${var.root_dir}/iso/Win10_21H2_EnglishInternational_x64.iso",
       "${var.iso_dir}/Win10_21H2_EnglishInternational_x64.iso",
       var.iso_url
+    ]
     name          = "win10"
   }

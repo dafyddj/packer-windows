@@ -13,7 +13,7 @@ _module_path := $(_ROOT)/$(_module)
 _module_name := $(subst /,_,$(_module))
 $(_module_name)_output := $(_module_path)
 
-vdiext := .vdi
+vdiext = /$(win_ver).vdi
 snapext := .snapshot
 boxext := .box
 
@@ -23,6 +23,6 @@ artifact_pre :=
 extra_srcs :=
 
 PACKER := packer
-PFLAGS := -timestamp-ui -force -var "root_dir=$(_ROOT)"
+PFLAGS := -timestamp-ui -force
 
 VBOXMANAGE := VBoxManage

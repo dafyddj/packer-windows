@@ -5,14 +5,14 @@ _ROOT := $(patsubst %/root.mk,%,$(call _find,$(CURDIR),root.mk))
 
 include $(_ROOT)/root.mk
 
-$(call DEPENDS_ON,install)
+$(call depends_on,install)
 
 include $(_ROOT)/pre.mk
 
 srcs := main.cat.pkr.hcl
-binary_pre := .
-binary_ext := $(snapext)
+artifact_pre := .
+artifact_ext := $(snapext)
 
-$(_module_name)_DEPENDS_ON := install_ARTIFACT_$$*
+$(_module_name)_depends_on := install_artifact_$$*
 
 include $(_ROOT)/post.mk

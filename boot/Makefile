@@ -8,8 +8,8 @@ include $(_ROOT)/pre.mk
 
 srcs := main.cat.pkr.hcl
 extra_srcs != find $(_ROOT)/floppy -type f
-artifact_ext := $(vdiext)
+artifact_ext = $(vdiext)
 
-$(_module_name)_output := $(_ROOT)/vms
+$(_module_name)_output := $(_ROOT)/vms/virtualbox
 
 include $(_ROOT)/post.mk
