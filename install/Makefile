@@ -1,18 +1,18 @@
 sp := $(subst ,, )
 _walk = $(if $1,$(wildcard /$(subst $(sp),/,$1)/$2) $(call _walk,$(wordlist 2,$(words $1),x $1),$2))
 _find = $(firstword $(call _walk,$(strip $(subst /, ,$1)),$2))
-_ROOT := $(patsubst %/root.mak,%,$(call _find,$(CURDIR),root.mak))
+_ROOT := $(patsubst %/root.mk,%,$(call _find,$(CURDIR),root.mk))
 
-include $(_ROOT)/root.mak
+include $(_ROOT)/root.mk
 
-$(call DEPENDS_ON,boot)
+$(call depends_on,boot)
 
-include $(_ROOT)/top.mak
+include $(_ROOT)/pre.mk
 
 srcs := main.pkr.hcl
-BINARY_PRE := .
-BINARY_EXT := $(snapext)
+artifact_pre := .
+artifact_ext := $(snapext)
 
-$(_MODULE_NAME)_DEPENDS_ON := boot_ARTIFACT_$$*
+$(_module_name)_depends_on := boot_artifact_$$*
 
-include $(_ROOT)/bottom.mak
+include $(_ROOT)/post.mk

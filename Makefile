@@ -1,3 +1,3 @@
-SUBDIRS = boot install guestadd update provision export
+subdirs = boot install guestadd update provision export
 
-include $(addsuffix /Makefile,$(SUBDIRS))
+include $(addsuffix /Makefile,$(subdirs))
