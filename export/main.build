@@ -8,6 +8,11 @@ variable "headless" {
   default = "true"
 }
 
+variable "output_dir" {
+  type    = string
+  default = "../box"
+}
+
 variable "root_dir" {
   type    = string
   default = ".."

@@ -13,6 +13,6 @@ srcs := main.cat.pkr.hcl
 artifact_ext := $(boxext)
 
 $(_module_name)_depends_on := provision_artifact_$$*
-$(_module_name)_output := $(_ROOT)/box
+$(_module_name)_output := $(_ROOT)/box/virtualbox
 
 include $(_ROOT)/post.mk
