@@ -17,6 +17,33 @@
     ]
   }
   provisioner "powershell" {
+    elevated_user = "SYSTEM"
+    elevated_password = ""
+    inline = [<<-EOF
+      $ProgressPreference = "SilentlyContinue"
+      Write-Host "Installing OpenSSH Server..."
+      [version]$OsVersion = (Get-CimInstance CIM_OperatingSystem).Version
+      if ($OsVersion.Major -lt 10) {
+        choco install openssh -params '"/SSHServerFeature"'
+      } else {
+        Get-WindowsCapability -Online -Name OpenSSH.Server* |
+          Add-WindowsCapability -Online | Out-Null
+        Set-Service sshd -StartupType Automatic
+      }
+      $authorizedKeysFile = "$env:ALLUSERSPROFILE\ssh\administrators_authorized_keys"
+      $vagrantInsecureKey =
+        "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4T" +
+        "jGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkc" +
+        "mF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp" +
+        "4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk" +
+        "1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9" +
+        "WhQ== vagrant insecure public key"
+      [IO.File]::WriteAllLines($authorizedKeysFile, $vagrantInsecureKey)
+      icacls $authorizedKeysFile /inheritance:r /grant Administrators:F /grant SYSTEM:F | Out-Null
+      EOF
+    ]
+  }
+  provisioner "powershell" {
     inline = [
       "choco-cleaner.ps1",
       "exit 0",

@@ -4,8 +4,13 @@ variable "disable_breakpoint" {
 }
 
 variable "headless" {
+  type    = bool
+  default = true
+}
+
+variable "root_dir" {
   type    = string
-  default = "true"
+  default = ".."
 }
 
 variable "shutdown_command" {
