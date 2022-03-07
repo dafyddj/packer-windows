@@ -43,7 +43,7 @@ $($(_module_name)_output)/$(artifact_pre)%$(snapext): $($(_module_name)_srcs) $$
 $($(_module_name)_output)/$(artifact_pre)%$(boxext): $($(_module_name)_srcs) $$($($(_module_name)_depends_on))
 	$(info Making $@)
 	@$(VBOXMANAGE) controlvm $* poweroff 2>/dev/null || true
-	@$(PACKER) build $(PFLAGS) -var "root_dir=$(_ROOT)" -var "output_dir=$(@D)" --only \*.$* $(_path)
+	@$(PACKER) build $(PFLAGS) -var "root_dir=$(_ROOT)" -var "output_dir=$(@D)" -only \*.$* $(_path)
 
 %.cat.pkr.hcl: %.build %.provision
 	$(info Making $@)
