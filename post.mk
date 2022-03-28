@@ -24,6 +24,7 @@ $(_CLEAN_2): clean-$(_module_name)-%:
 	$(info Cleaning $($(_module_name)_output)/$*$(artifact_ext))
 
 $($(_module_name)_artifacts): _path := $(_module_path)
+$($(_module_name)_artifacts): _pvars := $(_module_pvars)
 
 .SECONDEXPANSION:
 %.vdi: $($(_module_name)_srcs) $$($($(_module_name)_depends_on))
@@ -36,7 +37,7 @@ $($(_module_name)_artifacts): _path := $(_module_path)
 $($(_module_name)_output)/$(artifact_pre)%$(snapext): $($(_module_name)_srcs) $$($($(_module_name)_depends_on))
 	$(info Making $@)
 	@$(VBOXMANAGE) controlvm $* poweroff 2>/dev/null || true
-	@$(PACKER) build $(PFLAGS) -only \*.$* $(_path)
+	@$(PACKER) build $(PFLAGS) $(_pvars) -only \*.$* $(_path)
 	@touch $@
 
 .SECONDEXPANSION:
