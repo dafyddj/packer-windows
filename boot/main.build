@@ -75,7 +75,7 @@ source "virtualbox-iso" "boot" {
   hard_drive_nonrotational = true
   keep_registered          = true
   memory                   = var.memory
-  output_directory         = "${var.output_dir}"
+  output_directory         = var.output_dir
   shutdown_command         = var.shutdown_command
   skip_export              = true
   virtualbox_version_file  = ""
@@ -102,7 +102,7 @@ build {
   source "virtualbox-iso.boot" {
     guest_os_type = "Windows10_64"
     iso_checksum  = "06fd4a512c5f3e8d16f77ca909c4f20110329b8cdd5ad101e2afc0d58b06d416"
-    iso_url       = [
+    iso_urls      = [
       "${var.root_dir}/iso/Win10_21H2_EnglishInternational_x64.iso",
       "${var.iso_dir}/Win10_21H2_EnglishInternational_x64.iso",
       var.iso_url

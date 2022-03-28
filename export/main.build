@@ -8,7 +8,7 @@ variable "headless" {
   default = "true"
 }
 
-variable "output_dir" {
+variable "box_dir" {
   type    = string
   default = "../box"
 }
