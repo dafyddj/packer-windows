@@ -1,0 +1,111 @@
+variable "cpus" {
+  type    = string
+  default = "2"
+}
+
+variable "disable_breakpoint" {
+  type    = bool
+  default = true
+}
+
+variable "disk_size" {
+  type    = string
+  default = "20480"
+}
+
+variable "headless" {
+  type    = string
+  default = "true"
+}
+
+variable "iso_dir" {
+  type    = string
+  default = "../iso"
+}
+
+variable "iso_url" {
+  type    = string
+  default = "https://example.com/win.iso"
+}
+
+variable "memory" {
+  type    = string
+  default = "2048"
+}
+
+variable "output_dir" {
+  type    = string
+  default = "../vms"
+}
+
+variable "root_dir" {
+  type    = string
+  default = ".."
+}
+
+variable "shutdown_command" {
+  type    = string
+  default = "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\""
+}
+
+variable "update_limit" {
+  type    = number
+  default = 1000
+}
+
+source "virtualbox-iso" "boot" {
+  communicator = "winrm"
+  cpus         = var.cpus
+  disk_size    = var.disk_size
+  floppy_files = [
+    "${var.root_dir}/floppy/00-run-all-scripts.cmd",
+    "${var.root_dir}/floppy/01-install-wget.cmd",
+    "${var.root_dir}/floppy/_download.cmd",
+    "${var.root_dir}/floppy/_packer_config.cmd",
+    "${var.root_dir}/floppy/disablewinupdate.bat",
+    "${var.root_dir}/floppy/fixnetwork.ps1",
+    "${var.root_dir}/floppy/install-winrm.cmd",
+    "${var.root_dir}/floppy/powerconfig.bat",
+    "${var.root_dir}/floppy/${source.name}x64-pro/Autounattend.xml",
+    "${var.root_dir}/floppy/zz-start-sshd.cmd"
+  ]
+  guest_additions_mode     = "disable"
+  headless                 = var.headless
+  hard_drive_discard       = true
+  hard_drive_nonrotational = true
+  keep_registered          = true
+  memory                   = var.memory
+  output_directory         = var.output_dir
+  shutdown_command         = var.shutdown_command
+  skip_export              = true
+  virtualbox_version_file  = ""
+  vm_name                  = source.name
+  winrm_password           = "vagrant"
+  winrm_timeout            = "10000s"
+  winrm_username           = "vagrant"
+}
+
+build {
+  name = "boot"
+
+  source "virtualbox-iso.boot" {
+    guest_os_type = "Windows81_64"
+    iso_checksum  = "de3d15afbda350f77c27aad76844477e396e947302d7402c09a16f3fa7254c68"
+    iso_urls      = [
+      "${var.root_dir}/iso/Win8.1_EnglishInternational_x64.iso",
+      "${var.iso_dir}/Win8.1_EnglishInternational_x64.iso",
+      var.iso_url
+    ]
+    name          = "win81"
+  }
+
+  source "virtualbox-iso.boot" {
+    guest_os_type = "Windows10_64"
+    iso_checksum  = "06fd4a512c5f3e8d16f77ca909c4f20110329b8cdd5ad101e2afc0d58b06d416"
+    iso_urls      = [
+      "${var.root_dir}/iso/Win10_21H2_EnglishInternational_x64.iso",
+      "${var.iso_dir}/Win10_21H2_EnglishInternational_x64.iso",
+      var.iso_url
+    ]
+    name          = "win10"
+  }

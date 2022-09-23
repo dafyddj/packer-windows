@@ -3,6 +3,9 @@
 
 # Force Unix-style line endings on these files
 *.hcl eol=lf
+*.build eol=lf
+*.mk eol=lf
+*.provision eol=lf
 *.sh eol=lf
 ks.cfg eol=lf
 preseed.cfg eol=lf
@@ -13,6 +16,3 @@ Makefile eol=lf
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
 Autounattend.xml text eol=crlf
-
-# These files are binary
-*.cer binary

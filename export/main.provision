@@ -1,51 +1,3 @@
-variable "disable_breakpoint" {
-  type    = bool
-  default = true
-}
-
-variable "headless" {
-  type    = string
-  default = "true"
-}
-
-variable "shutdown_command" {
-  type    = string
-  default = "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\""
-}
-
-variable "skip_export" {
-  type    = bool
-  default = false
-}
-
-source "virtualbox-vm" "export" {
-  attach_snapshot         = "provisioned"
-  boot_wait               = "-1s"
-  communicator            = "winrm"
-  guest_additions_mode    = "disable"
-  headless                = "${var.headless}"
-  keep_registered         = true
-  shutdown_command        = "${var.shutdown_command}"
-  skip_export             = "${var.skip_export}"
-  virtualbox_version_file = ""
-  winrm_password          = "vagrant"
-  winrm_timeout           = "10000s"
-  winrm_username          = "vagrant"
-}
-
-build {
-  name = "export"
-
-  source "virtualbox-vm.export" {
-    name    = "win81"
-    vm_name = "win81x64-pro"
-  }
-
-  source "virtualbox-vm.export" {
-    name    = "win10"
-    vm_name = "win10x64-pro"
-  }
-
   provisioner "powershell" {
     inline = [<<-EOF
       @(
@@ -123,7 +75,6 @@ build {
   }
 
   post-processor "vagrant" {
-    output               = "box/${source.type}/${source.name}x64-pro-salt.box"
-    vagrantfile_template = "tpl/vagrantfile-${source.name}x64-pro.tpl"
+    output               = "${var.box_dir}/${source.name}.box"
+    vagrantfile_template = "${var.root_dir}/tpl/vagrantfile-${source.name}x64-pro.tpl"
   }
-}
