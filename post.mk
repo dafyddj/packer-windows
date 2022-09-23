@@ -27,7 +27,7 @@ $($(_module_name)_artifacts): _path := $(_module_path)
 $($(_module_name)_artifacts): _pvars := $(_module_pvars)
 
 .SECONDEXPANSION:
-%.vdi: $($(_module_name)_srcs) $$($($(_module_name)_depends_on))
+$($(_module_name)_output)/$(artifact_pre)%$(vdiext): $($(_module_name)_srcs) $$($($(_module_name)_depends_on))
 	$(info Making $@)
 	@$(VBOXMANAGE) controlvm $(*F) poweroff 2>/dev/null || true
 	@$(VBOXMANAGE) unregistervm $(*F) --delete 2>/dev/null || true

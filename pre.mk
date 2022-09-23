@@ -13,7 +13,7 @@ _module_path := $(_ROOT)/$(_module)
 _module_name := $(subst /,_,$(_module))
 $(_module_name)_output := $(_module_path)
 
-vdiext = /$(win_ver).vdi
+vdiext = .vdi
 snapext := .snapshot
 boxext := .box
 
