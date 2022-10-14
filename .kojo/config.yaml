@@ -1,0 +1,3 @@
+input: build.kojo
+output:
+  build.yml: {}
