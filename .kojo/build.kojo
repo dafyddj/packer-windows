@@ -47,6 +47,8 @@ jobs:
 <% end -%>
       - name: Packer upload
         if: github.ref_name == 'main'
+        env:
+          PKR_VAR_no_release=false
         run: |
           cd upload
           gmake ${{ matrix.version }}
