@@ -14,6 +14,6 @@ repos:
         name: Build Kojo templates
         language: ruby
         additional_dependencies: ["kojo"]
-        always_run: true
+        files: .kojo/*
         pass_filenames: false
         entry: kojo config .kojo/config.yaml --save .github/workflows
