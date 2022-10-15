@@ -30,6 +30,9 @@
         $_ | Remove-AppxProvisionedPackage -Online | Out-Null
       }
       Get-AppxPackage | ? { $_.InstallLocation -like "*WindowsApps*" -and
+        $_.Name -notlike "*Advertising*" -and
+        $_.Name -notlike "*NET.Native*" -and
+        $_.Name -notlike "*Store.Engagement*" -and
         $_.Name -notlike "*UI.Xaml*" -and
         $_.Name -notlike "*VCLibs*" -and
         $_.Name -notlike "*WinJS*" } | % {
