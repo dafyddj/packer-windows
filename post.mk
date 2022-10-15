@@ -48,8 +48,9 @@ $($(_module_name)_output)/$(artifact_pre)%$(boxext): $($(_module_name)_srcs) $$(
 
 %.cat.pkr.hcl: %.build %.provision
 	$(info Making $@)
-	cat $^ > $@
-	echo } >> $@
+	@cat $^ > $@
+	@echo } >> $@
+	@$(PACKER) init $@
 
 $(_module_name)_defined := T
 endif

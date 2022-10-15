@@ -13,6 +13,11 @@ variable "cm_version" {
   default = ""
 }
 
+variable "no_release" {
+  type    = bool
+  default = true
+}
+
 variable "prefix" {
   type    = string
   default = "test-"

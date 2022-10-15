@@ -14,6 +14,8 @@ fi
 next=$((cur + 1))
 echo $next >$serial
 
+cur=${GITHUB_RUN_NUMBER:-$cur}
+
 VERSION="$(date +%Y.%-m).$cur"
 
 echo $VERSION
