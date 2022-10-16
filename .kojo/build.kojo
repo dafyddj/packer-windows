@@ -53,4 +53,4 @@ jobs:
           PKR_VAR_no_release: false
         run: |
           cd upload
-          gmake ${{ matrix.version }}
+          gmake ${{ env.MAKE_VARS }} ${{ matrix.version }}
