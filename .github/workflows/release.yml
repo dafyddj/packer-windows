@@ -1,0 +1,56 @@
+name: Release boxes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: Version of Vagrant box to release
+
+jobs:
+  run-packer-release:
+    runs-on: macos-12
+    env:
+      PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VAGRANT_CLOUD_TOKEN: ${{ secrets.VAGRANT_CLOUD_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [win81, win10]
+    steps:
+      - name: Prepare environment
+        run: |
+          brew install make
+          INPUT=${{ inputs.version }}
+          [ -n "$INPUT" ] && echo "PKR_VAR_version=$INPUT" >> $GITHUB_ENV \
+            || echo "Workflow input not given"
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Download Vagrant box file
+        run: |
+          BOX_FILE=box/virtualbox/${{ matrix.version }}.box
+          BOX_URL=https://vagrantcloud.com/techneg/boxes/
+          BOX_URL+=test-${{ matrix.version }}x64-pro-salt/versions/
+          BOX_URL+=${{ inputs.version }}/providers/virtualbox.box
+          mkdir -p "${BOX_FILE%/*}"
+          case ${{ github.event_name }} in
+            workflow_dispatch)
+              wget --no-verbose -O "$BOX_FILE" "$BOX_URL"
+              ;;
+          esac
+      - name: Packer release
+        env:
+          PKR_VAR_prefix: ~
+        run: |
+          cd upload && gmake main.cat.pkr.hcl
+          case ${{ github.event_name }} in
+            workflow_dispatch)
+              packer build -timestamp-ui -force -only \*.${{ matrix.version }} .
+              ;;
+            *)
+              packer inspect .
+              packer validate -only \*.${{ matrix.version }} .
+              ;;
+          esac
