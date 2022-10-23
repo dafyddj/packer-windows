@@ -10,7 +10,7 @@ on:
         description: Version of Vagrant box to release
 
 jobs:
-  run-packer:
+  run-packer-release:
     runs-on: macos-12
     env:
       PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
         run: |
           brew install make
           INPUT=${{ inputs.version }}
-          [ -n "$INPUT" ] && echo "PKR_VAR_version=$INPUT" >> $GITHUB_ENV\
+          [ -n "$INPUT" ] && echo "PKR_VAR_version=$INPUT" >> $GITHUB_ENV \
             || echo "Workflow input not given"
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -38,9 +38,6 @@ jobs:
           case ${{ github.event_name }} in
             workflow_dispatch)
               wget --no-verbose -O "$BOX_FILE" "$BOX_URL"
-              ;;
-            *)
-              touch "$BOX_FILE"
               ;;
           esac
       - name: Packer release
