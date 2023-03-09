@@ -17,7 +17,7 @@ vdiext = .vdi
 snapext := .snapshot
 boxext := .box
 
-win_vers := win81 win10
+win_vers := win81 win10 win11
 
 artifact_pre :=
 extra_srcs :=

@@ -109,3 +109,14 @@ build {
     ]
     name          = "win10"
   }
+
+  source "virtualbox-iso.boot" {
+    guest_os_type = "Windows11_64"
+    iso_checksum  = "4ac798db206f7c4f4401f7db6f662c5dfa8cac197b343d95bc21902755ffeb1c"
+    iso_urls      = [
+      "${var.root_dir}/iso/Win11_22H2_EnglishInternational_x64.iso",
+      "${var.iso_dir}/Win11_22H2_EnglishInternational_x64.iso",
+      var.iso_url
+    ]
+    name          = "win11"
+  }
