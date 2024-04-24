@@ -1,20 +1,14 @@
 /box/
 /vms/
 
-/floppy/_packer_config_local*.cmd
 /iso
 
-.snapshots/
+.kitchen/
 .vagrant/
-packer_cache/
 output-*/
+packer_cache/
 
 *.snapshot
-*.auto.pkrvars
-*.auto.pkrvars.hcl
 *.cat.pkr.hcl
 
-.snapshot
 serial.box
-Makefile.local
-

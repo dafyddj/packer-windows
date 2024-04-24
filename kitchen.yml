@@ -1,0 +1,29 @@
+---
+driver:
+  name: vagrant
+  box_check_update: false
+  ssh:
+    insert_key: false
+<% if ENV.key?('TECHNEG_VAGRANT_PROVIDER') %>
+  provider: <%= ENV['TECHNEG_VAGRANT_PROVIDER'] %>
+<% else %>
+  provider: qemu
+<% end %>
+
+provisioner:
+  name: dummy
+
+verifier:
+  name: shell
+
+platforms:
+  - name: windows
+    driver:
+<% if ENV.key?('TECHNEG_VAGRANT_BOX') %>
+      box: <%= ENV['TECHNEG_VAGRANT_BOX'] %>
+<% else %>
+      box: techneg/win81x64-pro-salt
+<% end %>
+
+suites:
+  - name: default

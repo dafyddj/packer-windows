@@ -17,7 +17,7 @@ vdiext = .vdi
 snapext := .snapshot
 boxext := .box
 
-win_vers := win81 win10
+os_vers := $(shell cat $(_ROOT)/os_vers)
 
 artifact_pre :=
 extra_srcs :=

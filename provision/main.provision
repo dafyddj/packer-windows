@@ -1,5 +1,6 @@
   provisioner "powershell" {
     inline = [<<-EOF
+      $env:chocolateyVersion = '1.4.0'
       Set-ExecutionPolicy Bypass -Scope Process -Force
       [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
       Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -45,7 +46,7 @@
   }
   provisioner "powershell" {
     inline = [
-      "choco-cleaner.ps1",
+      "choco-cleaner",
       "exit 0",
     ]
   }
