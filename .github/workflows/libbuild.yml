@@ -1,0 +1,100 @@
+name: Build boxes
+
+on:
+  workflow_call:
+    inputs:
+      build-os-version:
+        required: true
+        type: string
+        description: The OS version to build (must match a value in the local file `os_vers`)
+      build-runner:
+        type: string
+        default: macos-12
+      build-type:
+        required: true
+        type: string
+        description: The VM system type to build (must match a value in the local file `builds`)
+      timeout-minutes:
+        type: number
+        default: 30
+        description: A timeout value in minutes for the whole job to complete
+      upload-box:
+        type: boolean
+        default: true
+
+jobs:
+  run-packer:
+    name: Build & test box
+    runs-on: ${{ inputs.build-runner }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    env:
+      CHEF_LICENSE: accept-silent
+      MAKE_VARS: ""
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4.1.3
+      - name: Debug on runner (When re-run with "Enable debug logging" checked)
+        if: runner.debug
+        uses: mxschmitt/action-tmate@a283f9441d2d96eb62436dc46d7014f5d357ac22 # v3
+        with:
+          detached: true
+      - name: Install virtualisation software
+        env:
+          TECHNEG_VAGRANT_PROVIDER: ${{ startsWith(inputs.build-type, 'qemu') && 'qemu-system-x86' || 'virtualbox' }}
+        if: ${{ !startsWith(runner.name, 'self') }}
+        run: |
+          kernel_name=$(uname -s)
+          if [ "$kernel_name" == "Linux" ]; then
+            sudo apt update
+            sudo apt --yes install vagrant $TECHNEG_VAGRANT_PROVIDER
+          elif [ "$kernel_name" == "Darwin" ]; then
+            brew update
+            brew install make
+          fi
+      - name: Prepare environment
+        if: startsWith(inputs.build-type, 'qemu')
+        run: |
+          kernel_name=$(uname -s)
+          if [ "$kernel_name" == "Linux" ]; then
+            echo PKR_VAR_accelerator=kvm >> $GITHUB_ENV
+          fi
+      - name: Run Packer
+        id: packer
+        env:
+          PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gmake ${{ env.MAKE_VARS }} -f ${{ inputs.build-type }}/Makefile ${{ inputs.build-os-version }}
+      - name: Prepare Vagrant
+        if: startsWith(inputs.build-type, 'qemu')
+        run: vagrant plugin install vagrant-qemu
+      - name: Install Test Kitchen
+        if: ${{ !startsWith(runner.name, 'self') }}
+        uses: actionshub/chef-install@d41f8dde8642d5cd05abefa333fbf2784cff830c # 3.0.0
+        env:
+          # renovate: datasource=github-tags depName=chef/chef-workstation
+          CHEF_WS_VERSION: 24.2.1058
+        with:
+          project: chef-workstation
+          version: ${{ env.CHEF_WS_VERSION }}
+      - name: Prepare Test Kitchen
+        env:
+          # renovate: datasource=rubygems depName=kitchen-salt
+          KITCHEN-SALT_VERSION: 0.7.2
+        run: |
+          if [[ "${{ inputs.build-type }}" == vbox* ]]; then
+            echo TECHNEG_VAGRANT_PROVIDER=virtualbox >> $GITHUB_ENV
+          fi
+          if [[ "${{ runner.name }}" != self* ]]; then
+            chef gem install kitchen-salt --version ${{ env.KITCHEN-SALT_VERSION }}
+          fi
+      - name: Run Test Kitchen
+        env:
+          TECHNEG_VAGRANT_BOX: ${{ steps.packer.outputs.vagrant-box }}
+        run: kitchen test
+      - name: Upload to Vagrant Cloud (On GitHub default branch only)
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        env:
+          PACKER_COMMAND: ${{ inputs.upload-box && 'build -timestamp-ui' || 'validate' }}
+          VAGRANT_CLOUD_TOKEN: ${{ secrets.VAGRANT_CLOUD_TOKEN }}
+        run: |
+          packer $PACKER_COMMAND -only \*.${{ inputs.build-os-version }} -var version=$(bin/version) -var prefix= -var no_release=false -var box_dir=box/${{ inputs.build-type }} upload
