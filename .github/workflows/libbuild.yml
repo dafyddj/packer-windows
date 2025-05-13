@@ -32,7 +32,7 @@ jobs:
       MAKE_VARS: ""
     steps:
       - name: Checkout repository
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Debug on runner (When re-run with "Enable debug logging" checked)
         if: runner.debug
         uses: mxschmitt/action-tmate@a283f9441d2d96eb62436dc46d7014f5d357ac22 # v3
@@ -45,18 +45,26 @@ jobs:
         run: |
           kernel_name=$(uname -s)
           if [ "$kernel_name" == "Linux" ]; then
+            wget -O- https://apt.releases.hashicorp.com/gpg \
+              | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+            echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+              | sudo tee /etc/apt/sources.list.d/hashicorp.list
             sudo apt update
             sudo apt --yes install vagrant $TECHNEG_VAGRANT_PROVIDER
           elif [ "$kernel_name" == "Darwin" ]; then
             brew update
-            brew install make
+            brew install make qemu vagrant
           fi
       - name: Prepare environment
         if: startsWith(inputs.build-type, 'qemu')
         run: |
+          # Needed until a fix for Gem dependencies is released (Vagrant 2.4.3?)
+          echo VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1 >> $GITHUB_ENV
           kernel_name=$(uname -s)
           if [ "$kernel_name" == "Linux" ]; then
             echo PKR_VAR_accelerator=kvm >> $GITHUB_ENV
+          elif [ "$kernel_name" == "Darwin" ]; then
+            : # No action needed for Darwin
           fi
       - name: Run Packer
         id: packer
@@ -71,8 +79,8 @@ jobs:
         if: ${{ !startsWith(runner.name, 'self') }}
         uses: actionshub/chef-install@d41f8dde8642d5cd05abefa333fbf2784cff830c # 3.0.0
         env:
-          # renovate: datasource=github-tags depName=chef/chef-workstation
-          CHEF_WS_VERSION: 24.2.1058
+          # renovate: datasource=custom.omnitruck depName=chef-workstation
+          CHEF_WS_VERSION: 24.8.1068
         with:
           project: chef-workstation
           version: ${{ env.CHEF_WS_VERSION }}
