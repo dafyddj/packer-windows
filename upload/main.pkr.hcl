@@ -54,7 +54,7 @@ build {
       files = [ "${var.box_dir}/${source.name}.box" ]
     }
 
-    post-processor "vagrant-cloud" {
+    post-processor "vagrant-registry" {
       box_tag = "${var.vagrant_cloud_org}/${var.prefix}${source.name}-x64-${var.cm}"
       version = "${var.version}"
       no_release = var.no_release
