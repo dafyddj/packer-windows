@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Debug on runner (When re-run with "Enable debug logging" checked)
         if: runner.debug
-        uses: mxschmitt/action-tmate@a283f9441d2d96eb62436dc46d7014f5d357ac22 # v3
+        uses: mxschmitt/action-tmate@e5c7151931ca95bad1c6f4190c730ecf8c7dde48 # v3.19
         with:
           detached: true
       - name: Install virtualisation software
@@ -77,10 +77,10 @@ jobs:
         run: vagrant plugin install vagrant-qemu
       - name: Install Test Kitchen
         if: ${{ !startsWith(runner.name, 'self') }}
-        uses: actionshub/chef-install@d41f8dde8642d5cd05abefa333fbf2784cff830c # 3.0.0
+        uses: actionshub/chef-install@776a917c09d87c381d1d5342f83cd554223fa49c # 3.0.1
         env:
           # renovate: datasource=custom.omnitruck depName=chef-workstation
-          CHEF_WS_VERSION: 24.8.1068
+          CHEF_WS_VERSION: 25.2.1075
         with:
           project: chef-workstation
           version: ${{ env.CHEF_WS_VERSION }}
@@ -103,6 +103,7 @@ jobs:
         if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         env:
           PACKER_COMMAND: ${{ inputs.upload-box && 'build -timestamp-ui' || 'validate' }}
-          VAGRANT_CLOUD_TOKEN: ${{ secrets.VAGRANT_CLOUD_TOKEN }}
+          HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
+          HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
         run: |
           packer $PACKER_COMMAND -only \*.${{ inputs.build-os-version }} -var version=$(bin/version) -var prefix= -var no_release=false -var box_dir=box/${{ inputs.build-type }} upload
