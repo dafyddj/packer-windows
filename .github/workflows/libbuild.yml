@@ -80,7 +80,7 @@ jobs:
         uses: actionshub/chef-install@776a917c09d87c381d1d5342f83cd554223fa49c # 3.0.1
         env:
           # renovate: datasource=custom.omnitruck depName=chef-workstation
-          CHEF_WS_VERSION: 25.2.1075
+          CHEF_WS_VERSION: 25.5.1084
         with:
           project: chef-workstation
           version: ${{ env.CHEF_WS_VERSION }}
