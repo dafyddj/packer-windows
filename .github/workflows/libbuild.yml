@@ -32,10 +32,10 @@ jobs:
       MAKE_VARS: ""
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Debug on runner (When re-run with "Enable debug logging" checked)
         if: runner.debug
-        uses: mxschmitt/action-tmate@e5c7151931ca95bad1c6f4190c730ecf8c7dde48 # v3.19
+        uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3.24
         with:
           detached: true
       - name: Install virtualisation software
@@ -63,6 +63,9 @@ jobs:
           kernel_name=$(uname -s)
           if [ "$kernel_name" == "Linux" ]; then
             echo PKR_VAR_accelerator=kvm >> $GITHUB_ENV
+            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+            sudo udevadm control --reload-rules
+            sudo udevadm trigger --name-match=kvm
           elif [ "$kernel_name" == "Darwin" ]; then
             : # No action needed for Darwin
           fi
@@ -77,28 +80,19 @@ jobs:
         run: vagrant plugin install vagrant-qemu
       - name: Install Test Kitchen
         if: ${{ !startsWith(runner.name, 'self') }}
-        uses: actionshub/chef-install@776a917c09d87c381d1d5342f83cd554223fa49c # 3.0.1
-        env:
-          # renovate: datasource=custom.omnitruck depName=chef-workstation
-          CHEF_WS_VERSION: 25.5.1084
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
-          project: chef-workstation
-          version: ${{ env.CHEF_WS_VERSION }}
+          bundler-cache: true
+          ruby-version: '3.1'
       - name: Prepare Test Kitchen
-        env:
-          # renovate: datasource=rubygems depName=kitchen-salt
-          KITCHEN-SALT_VERSION: 0.7.2
         run: |
           if [[ "${{ inputs.build-type }}" == vbox* ]]; then
             echo TECHNEG_VAGRANT_PROVIDER=virtualbox >> $GITHUB_ENV
           fi
-          if [[ "${{ runner.name }}" != self* ]]; then
-            chef gem install kitchen-salt --version ${{ env.KITCHEN-SALT_VERSION }}
-          fi
       - name: Run Test Kitchen
         env:
           TECHNEG_VAGRANT_BOX: ${{ steps.packer.outputs.vagrant-box }}
-        run: kitchen test
+        run: ${{ runner.environment != 'self-hosted' && 'bundle exec' || '' }} kitchen test
       - name: Upload to Vagrant Cloud (On GitHub default branch only)
         if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         env:
